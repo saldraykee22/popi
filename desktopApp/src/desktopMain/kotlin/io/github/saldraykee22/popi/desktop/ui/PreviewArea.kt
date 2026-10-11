@@ -59,6 +59,7 @@ fun PreviewArea(
                 color = PopiColors.textMuted,
                 fontSize = 12.sp,
                 fontFamily = PopiFonts.mono,
+                modifier = Modifier.testTag("playhead-label"),
             )
         }
     }
