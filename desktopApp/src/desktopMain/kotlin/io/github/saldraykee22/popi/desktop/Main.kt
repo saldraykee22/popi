@@ -1,117 +1,206 @@
 package io.github.saldraykee22.popi.desktop
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.foundation.Image
-import java.util.concurrent.atomic.AtomicInteger
-import androidx.compose.ui.input.key.*
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isMetaPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import io.github.saldraykee22.popi.domain.*
+import io.github.saldraykee22.popi.desktop.ui.MediaEntry
+import io.github.saldraykee22.popi.desktop.ui.MediaKind
+import io.github.saldraykee22.popi.desktop.ui.MediaPanel
+import io.github.saldraykee22.popi.desktop.ui.MediaThumbnailSource
+import io.github.saldraykee22.popi.desktop.ui.PopiColors
+import io.github.saldraykee22.popi.desktop.ui.PopiFonts
+import io.github.saldraykee22.popi.desktop.ui.PopiPanel
+import io.github.saldraykee22.popi.desktop.ui.PopiTheme
+import io.github.saldraykee22.popi.desktop.ui.PreviewArea
+import io.github.saldraykee22.popi.desktop.ui.PreviewFrame
+import io.github.saldraykee22.popi.desktop.ui.StatusLine
+import io.github.saldraykee22.popi.desktop.ui.StatusMessage
+import io.github.saldraykee22.popi.desktop.ui.TimelineBlock
+import io.github.saldraykee22.popi.desktop.ui.TimelineLane
+import io.github.saldraykee22.popi.desktop.ui.formatTimecode
+import io.github.saldraykee22.popi.desktop.ui.planMediaImport
+import io.github.saldraykee22.popi.domain.Asset
+import io.github.saldraykee22.popi.domain.Clip
+import io.github.saldraykee22.popi.domain.CommandEngine
+import io.github.saldraykee22.popi.domain.Project
+import io.github.saldraykee22.popi.domain.Track
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.delay
+import java.awt.Component
+import java.awt.datatransfer.DataFlavor
+import java.awt.dnd.DnDConstants
+import java.awt.dnd.DropTarget
+import java.awt.dnd.DropTargetAdapter
+import java.awt.dnd.DropTargetDropEvent
 import java.io.File
-import java.nio.file.Files
+import java.net.URI
 import java.nio.file.Path
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 
-private val ink = Color(0xFF000000)
-private val surface = Color(0xFF111113)
-private val edge = Color(0xFF2A2A2F)
-private val paper = Color(0xFFE7E5E0)
-private val muted = Color(0xFF9C9A93)
-private val sand = Color(0xFFD2B47A)
-
 fun main() = application {
+    val dropInbox = remember { FileDropInbox() }
     Window(onCloseRequest = ::exitApplication, title = "popi") {
-        PopiTheme { DesktopScreen() }
+        DisposableEffect(window) {
+            installFileDrop(window) { files -> dropInbox.offer(files) }
+            onDispose { window.dropTarget = null }
+        }
+        PopiTheme { DesktopScreen(dropInbox = dropInbox) }
     }
 }
 
-@Composable
-internal fun PopiTheme(content: @Composable () -> Unit) {
-    MaterialTheme(colorScheme = darkColorScheme(background = ink, surface = surface, primary = sand, onPrimary = ink, primaryContainer = sand, onPrimaryContainer = ink, secondary = sand, onSecondary = ink, secondaryContainer = sand, onSecondaryContainer = ink, tertiary = sand, onTertiary = ink, tertiaryContainer = sand, onTertiaryContainer = ink, onSurface = paper, onBackground = paper, outline = edge), content = content)
+/** Pencereye bırakılan dosya gruplarını arayüze iletir. Gönderim iş parçacığı güvenlidir. */
+class FileDropInbox {
+    private val channel = Channel<List<File>>(Channel.UNLIMITED)
+
+    internal val batches: ReceiveChannel<List<File>> get() = channel
+
+    fun offer(files: List<File>) {
+        channel.trySend(files)
+    }
 }
 
+/** Windows Gezgini'nden bırakılan dosyaları yakalar. Bırakma geçersizse reddeder. */
+private fun installFileDrop(component: Component, onFiles: (List<File>) -> Unit): DropTarget =
+    DropTarget(component, DnDConstants.ACTION_COPY, object : DropTargetAdapter() {
+        override fun drop(event: DropTargetDropEvent) {
+            if (!event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                event.rejectDrop()
+                return
+            }
+            event.acceptDrop(DnDConstants.ACTION_COPY)
+            val files = runCatching {
+                @Suppress("UNCHECKED_CAST")
+                event.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
+            }.getOrNull()
+            event.dropComplete(files != null)
+            if (files != null) onFiles(files)
+        }
+    }, true)
+
 @Composable
-internal fun DesktopScreen(storeOverride: ProjectStore? = null, platformOverride: DesktopPlatform? = null) {
+internal fun DesktopScreen(
+    storeOverride: ProjectStore? = null,
+    platformOverride: DesktopPlatform? = null,
+    thumbnailOverride: MediaThumbnailSource? = null,
+    dropInbox: FileDropInbox? = null,
+    previewContent: (@Composable (Modifier) -> Unit)? = null,
+) {
     val platform = remember(platformOverride) { platformOverride ?: WindowsDesktopPlatform() }
     val store = remember(storeOverride) { storeOverride ?: ProjectStore() }
+    val thumbnails = remember(thumbnailOverride) {
+        thumbnailOverride ?: DesktopMediaThumbnails(Thumbnails(defaultThumbnailCacheDir()))
+    }
     val restored = remember { store.loadLast() }
     var engine by remember { mutableStateOf(CommandEngine(restored?.second ?: Project())) }
     var project by remember { mutableStateOf(engine.project) }
     var projectName by remember { mutableStateOf(restored?.first ?: "Adsız Proje") }
     var command by remember { mutableStateOf("") }
-    var message by remember { mutableStateOf("Hazır") }
+    var status by remember { mutableStateOf(StatusMessage("Hazır")) }
     var selectedClipId by remember { mutableStateOf<String?>(null) }
     var playheadMs by remember { mutableLongStateOf(0L) }
     var playing by remember { mutableStateOf(false) }
     var exportRunning by remember { mutableStateOf(false) }
     var exportPercent by remember { mutableIntStateOf(0) }
-    val focusRequester = remember { FocusRequester() }
     val renderer = remember { DesktopRenderer() }
     var previewImage by remember { mutableStateOf<ImageBitmap?>(null) }
     val previewRequest = remember { AtomicInteger() }
     val videoTrack: Track? = project.tracks.firstOrNull { it.kind == "video" }
     val audioTrack: Track? = project.tracks.firstOrNull { it.kind == "audio" }
+    val textTrack: Track? = project.tracks.firstOrNull { it.kind == "text" }
     val selectedClip: Clip? = videoTrack?.clips?.firstOrNull { it.id == selectedClipId }
     val duration = videoTrack?.clips?.sumOf { it.outMs - it.inMs } ?: 0L
 
-    fun refresh() { project = engine.project; if (selectedClipId !in videoTrack?.clips?.map { it.id }.orEmpty()) selectedClipId = null }
-    fun save() { runCatching { store.save(projectName, project); message = "Kaydedildi" }.onFailure { message = "Kaydetme hatası: ${it.message}" } }
+    fun assetFor(assetId: String): Asset? = project.assets.firstOrNull { it.id == assetId }
+    fun refresh() {
+        project = engine.project
+        if (selectedClipId !in videoTrack?.clips?.map { it.id }.orEmpty()) selectedClipId = null
+    }
+    fun save() {
+        runCatching { store.save(projectName, project); status = StatusMessage("Kaydedildi") }
+            .onFailure { status = StatusMessage("Kaydetme hatası: ${it.message}", true) }
+    }
     fun execute(json: String) {
-        runCatching { engine.executeJson(json); refresh(); save(); message = "Düzenleme uygulandı" }
-            .onFailure { message = it.message ?: "Komut uygulanamadı" }
+        runCatching { engine.executeJson(json); refresh(); save(); status = StatusMessage("Düzenleme uygulandı") }
+            .onFailure { status = StatusMessage(it.message ?: "Komut uygulanamadı", true) }
     }
     fun importFiles(files: List<File>) {
-        files.forEach { file ->
-            val ext = file.extension.lowercase()
-            val kind = when (ext) { "mp4", "mov", "mkv", "webm", "avi" -> "video"; "mp3", "wav", "m4a", "aac", "ogg", "flac" -> "audio"; "png", "jpg", "jpeg", "webp" -> "image"; else -> null }
-            if (kind == null) { message = "Desteklenmeyen dosya: ${file.name}"; return@forEach }
-            val length = runCatching {
-                val p = ProcessBuilder("ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", file.absolutePath).start()
-                val seconds = p.inputStream.bufferedReader().readText().trim().toDoubleOrNull() ?: 0.0
-                if (p.waitFor() == 0) (seconds * 1000).toLong() else 0L
-            }.getOrDefault(0L)
-            val id = "asset-${UUID.randomUUID()}"
-            engine.registerAssets(listOf(Asset(id, kind, file.toURI().toString(), length)))
-            if (kind == "video") engine.executeJson("""{"op":"import_clip","assetId":"$id","trackId":"v1"}""")
-            if (kind == "audio") {
-                val audioCount = engine.project.tracks.firstOrNull { it.kind == "audio" }?.clips?.size ?: 0
-                if (audioCount == 0) engine.executeJson("""{"op":"add_audio","assetId":"$id","trackId":"m1","volume":0.3}""")
+        val plan = planMediaImport(files) { it.name }
+        val result = runCatching {
+            plan.accepted.forEach { (file, kind) ->
+                val id = "asset-${UUID.randomUUID()}"
+                engine.registerAssets(listOf(Asset(id, kind.wire, file.toURI().toString(), probeDurationMs(file))))
+                when (kind) {
+                    MediaKind.VIDEO -> engine.executeJson("""{"op":"import_clip","assetId":"$id","trackId":"v1"}""")
+                    MediaKind.AUDIO -> {
+                        val audioCount = engine.project.tracks.firstOrNull { it.kind == "audio" }?.clips?.size ?: 0
+                        if (audioCount == 0) engine.executeJson("""{"op":"add_audio","assetId":"$id","trackId":"m1","volume":0.3}""")
+                    }
+                }
             }
+            refresh()
+            save()
         }
-        refresh(); save(); message = "${files.size} medya içe aktarıldı"
+        val notice = plan.notice
+        status = when {
+            result.isFailure -> StatusMessage(result.exceptionOrNull()?.message ?: "İçe aktarma hatası", true)
+            notice != null && plan.accepted.isEmpty() -> StatusMessage(notice, true)
+            notice != null -> StatusMessage("${plan.accepted.size} medya içe aktarıldı. $notice", true)
+            else -> StatusMessage("${plan.accepted.size} medya içe aktarıldı")
+        }
     }
 
     LaunchedEffect(project, projectName) {
         delay(500)
         runCatching { store.save(projectName, project) }
+    }
+    LaunchedEffect(dropInbox) {
+        dropInbox?.let { inbox -> for (batch in inbox.batches) importFiles(batch) }
     }
     LaunchedEffect(project, playing, playheadMs) {
         if (!playing && duration > 0) {
@@ -123,10 +212,10 @@ internal fun DesktopScreen(storeOverride: ProjectStore? = null, platformOverride
                     val elapsed = (System.nanoTime() - began) / 1_000_000
                     if (previewRequest.get() == request) {
                         previewImage = frame.toComposeImageBitmap()
-                        message = "Önizleme ${elapsed} ms"
+                        status = StatusMessage("Önizleme ${elapsed} ms")
                     }
                     println("Popi preview render latency: ${elapsed} ms at ${frameTime} ms")
-                }.onFailure { if (previewRequest.get() == request) message = "Önizleme hatası: ${it.message}" }
+                }.onFailure { if (previewRequest.get() == request) status = StatusMessage("Önizleme hatası: ${it.message}", true) }
             }
         }
     }
@@ -142,7 +231,31 @@ internal fun DesktopScreen(storeOverride: ProjectStore? = null, platformOverride
         }
     }
 
-    Column(Modifier.fillMaxSize().background(ink).onPreviewKeyEvent { event ->
+    // Zaman çizelgesi blokları: video klipleri art arda, ses ve metin kendi başlangıçlarında.
+    val videoBlocks: List<TimelineBlock> = run {
+        var cursor = 0L
+        videoTrack?.clips.orEmpty().map { clip ->
+            val length = clip.outMs - clip.inMs
+            TimelineBlock(clip.id, assetFor(clip.assetId)?.let(::displayName) ?: "Klip", cursor, length, assetFor(clip.assetId))
+                .also { cursor += length }
+        }
+    }
+    val audioBlocks: List<TimelineBlock> = audioTrack?.clips.orEmpty().map { clip ->
+        TimelineBlock(clip.id, assetFor(clip.assetId)?.let(::displayName) ?: "Ses", clip.startMs ?: 0L, clip.outMs - clip.inMs, assetFor(clip.assetId))
+    }
+    val textBlocks: List<TimelineBlock> = textTrack?.items.orEmpty().map { item ->
+        TimelineBlock(item.id, item.text, item.startMs, item.durationMs)
+    }
+    val timelineTotal = (videoBlocks + audioBlocks + textBlocks)
+        .maxOfOrNull { it.startMs + it.durationMs }
+        ?.coerceAtLeast(duration)
+        ?.coerceAtLeast(1L)
+        ?: duration.coerceAtLeast(1L)
+    val mediaEntries = project.assets.map { MediaEntry(it, displayName(it)) }
+    val hint = if (videoTrack?.clips.isNullOrEmpty()) "Medya içe aktar" else "Önizleme hazırlanıyor"
+    val defaultPreview: @Composable (Modifier) -> Unit = { modifier -> PreviewFrame(modifier, previewImage, hint) }
+
+    Column(Modifier.fillMaxSize().background(PopiColors.ground).onPreviewKeyEvent { event ->
         if (event.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
         val ctrl = event.isCtrlPressed || event.isMetaPressed
         when {
@@ -154,110 +267,179 @@ internal fun DesktopScreen(storeOverride: ProjectStore? = null, platformOverride
             else -> false
         }
     }.focusable()) {
-        Row(Modifier.fillMaxWidth().height(58.dp).background(surface).padding(horizontal = 18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text("popi", color = sand, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
-            OutlinedTextField(projectName, { projectName = it }, Modifier.width(200.dp).height(54.dp), singleLine = true, textStyle = TextStyle(color = paper, fontSize = 14.sp), label = { Text("Proje adı", color = muted) })
+        Row(
+            Modifier.fillMaxWidth().height(64.dp).background(PopiColors.surface).padding(horizontal = 18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text("popi", color = PopiColors.accent, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
+            OutlinedTextField(
+                value = projectName,
+                onValueChange = { projectName = it },
+                modifier = Modifier.width(220.dp),
+                singleLine = true,
+                textStyle = TextStyle(color = PopiColors.text, fontSize = 14.sp),
+                label = { Text("Proje adı", color = PopiColors.textMuted) },
+            )
             Spacer(Modifier.weight(1f))
-            TextButton(onClick = { runCatching { engine.undo(); refresh(); save(); message = "Geri alındı" }.onFailure { message = it.message ?: "Geri alınacak işlem yok" } }, enabled = engine.canUndo()) { Text("↶ Geri al") }
-            TextButton(onClick = { runCatching { engine.redo(); refresh(); save(); message = "Yinelendi" }.onFailure { message = it.message ?: "Yinelenecek işlem yok" } }, enabled = engine.canRedo()) { Text("↷ Yinele") }
-            Button(onClick = {
-                val output = platform.chooseExportPath(projectName) ?: return@Button
-                exportRunning = true; exportPercent = 0
-                thread(name = "popi-export") {
-                    runCatching { renderer.export(project, output) { exportPercent = it } }
-                        .onSuccess { message = "Dışa aktarıldı: ${it.fileName}" }
-                        .onFailure { message = "Dışa aktarma hatası: ${it.message}" }
-                    exportRunning = false
-                }
-            }, enabled = !exportRunning && (videoTrack?.clips?.isNotEmpty() == true)) { Text(if (exportRunning) "Dışa aktarılıyor %$exportPercent" else "Dışa aktar") }
-            if (exportRunning) TextButton(onClick = { renderer.cancelExport(); message = "Dışa aktarma iptal ediliyor" }) { Text("İptal") }
+            TextButton(
+                onClick = {
+                    runCatching { engine.undo(); refresh(); save(); status = StatusMessage("Geri alındı") }
+                        .onFailure { status = StatusMessage(it.message ?: "Geri alınacak işlem yok", true) }
+                },
+                enabled = engine.canUndo(),
+            ) { Text("↶ Geri al") }
+            TextButton(
+                onClick = {
+                    runCatching { engine.redo(); refresh(); save(); status = StatusMessage("Yinelendi") }
+                        .onFailure { status = StatusMessage(it.message ?: "Yinelenecek işlem yok", true) }
+                },
+                enabled = engine.canRedo(),
+            ) { Text("↷ Yinele") }
+            Button(
+                onClick = {
+                    val output = platform.chooseExportPath(projectName) ?: return@Button
+                    exportRunning = true
+                    exportPercent = 0
+                    thread(name = "popi-export") {
+                        runCatching { renderer.export(project, output) { exportPercent = it } }
+                            .onSuccess { status = StatusMessage("Dışa aktarıldı: ${it.fileName}") }
+                            .onFailure { status = StatusMessage("Dışa aktarma hatası: ${it.message}", true) }
+                        exportRunning = false
+                    }
+                },
+                enabled = !exportRunning && (videoTrack?.clips?.isNotEmpty() == true),
+            ) { Text(if (exportRunning) "Dışa aktarılıyor %$exportPercent" else "Dışa aktar") }
+            if (exportRunning) {
+                TextButton(onClick = { renderer.cancelExport(); status = StatusMessage("Dışa aktarma iptal ediliyor") }) { Text("İptal") }
+            }
         }
         Row(Modifier.weight(1f).fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Surface(Modifier.width(250.dp).fillMaxHeight(), color = surface, border = BorderStroke(1.dp, edge), shape = RoundedCornerShape(10.dp)) {
-                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) { Text("MEDYA", color = muted, fontSize = 12.sp, letterSpacing = 1.sp); Spacer(Modifier.weight(1f)); TextButton(onClick = {
-                        val files = platform.chooseMediaFiles()
-                        importFiles(files)
-                    }) { Text("+ İçe aktar", color = sand) } }
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        items(project.assets, key = { it.id }) { asset ->
-                            Surface(color = Color(0xFF19191C), border = BorderStroke(1.dp, edge), shape = RoundedCornerShape(7.dp)) {
-                                Column(Modifier.fillMaxWidth().padding(10.dp)) {
-                                    Text(if (asset.kind == "audio") "♫" else "▣", color = sand, fontSize = 20.sp)
-                                    Text(Path.of(java.net.URI(asset.uri)).fileName.toString(), color = paper, fontSize = 12.sp, maxLines = 1)
-                                    Text("${asset.kind} · ${asset.durationMs / 1000}s", color = muted, fontSize = 11.sp)
-                                }
-                            }
-                        }
-                    }
-                    Spacer(Modifier.weight(1f))
-                    Text("Dosyaları buraya sürükle", color = muted, fontSize = 12.sp)
-                }
-            }
+            MediaPanel(
+                entries = mediaEntries,
+                thumbnails = thumbnails,
+                onImport = { importFiles(platform.chooseMediaFiles()) },
+                modifier = Modifier.width(250.dp).fillMaxHeight(),
+            )
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Surface(Modifier.weight(1f).fillMaxWidth(), color = surface, border = BorderStroke(1.dp, edge), shape = RoundedCornerShape(10.dp)) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        Box(Modifier.heightIn(max = 410.dp).aspectRatio(9f / 16f).fillMaxHeight().background(Color(0xFF080809), RoundedCornerShape(8.dp)).testTag("preview-frame"), contentAlignment = Alignment.Center) {
-                            if (previewImage != null) Image(previewImage!!, contentDescription = "Video önizlemesi", modifier = Modifier.fillMaxSize().testTag("preview-image"), contentScale = ContentScale.Fit)
-                            else Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text("9:16", color = muted, fontSize = 18.sp)
-                                Text(if (videoTrack?.clips.isNullOrEmpty()) "Medya içe aktar" else "Önizleme hazırlanıyor", color = paper)
-                            }
-                            TextButton(onClick = { playing = !playing }) { Text(if (playing) "Ⅱ Duraklat" else "▶ Oynat", color = sand) }
-                        }
-                        Spacer(Modifier.height(10.dp))
-                        Text("${formatTime(playheadMs)} / ${formatTime(duration)}", color = muted, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
+                PreviewArea(
+                    preview = previewContent ?: defaultPreview,
+                    playing = playing,
+                    playheadLabel = "${formatTimecode(playheadMs)} / ${formatTimecode(duration)}",
+                    onTogglePlay = { playing = !playing },
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                )
+                PopiPanel(Modifier.fillMaxWidth().height(228.dp), padding = 12.dp, spacing = 6.dp) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("ZAMAN ÇİZELGESİ", color = PopiColors.textMuted, fontSize = 12.sp, letterSpacing = 1.sp)
+                        Spacer(Modifier.weight(1f))
+                        TextButton(onClick = { playheadMs = 0; playing = false }) { Text("Başa", color = PopiColors.accent) }
                     }
-                }
-                Surface(Modifier.fillMaxWidth().height(228.dp), color = surface, border = BorderStroke(1.dp, edge), shape = RoundedCornerShape(10.dp)) {
-                    Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) { Text("ZAMAN ÇİZELGESİ", color = muted, fontSize = 12.sp, letterSpacing = 1.sp); Spacer(Modifier.weight(1f)); TextButton(onClick = { playheadMs = 0; playing = false }) { Text("Başa", color = sand) } }
-                        TimelineTrack("Video", videoTrack?.clips.orEmpty().map { it.id to (project.assets.firstOrNull { a -> a.id == it.assetId }?.let { a -> Path.of(java.net.URI(a.uri)).fileName.toString() } ?: "Klip") }, selectedClipId, { selectedClipId = it }, playheadMs, duration, { playheadMs = it })
-                        TimelineTrack("Metin", project.tracks.firstOrNull { it.kind == "text" }?.items.orEmpty().map { it.id to it.text }, null, {}, playheadMs, duration, { playheadMs = it })
-                        TimelineTrack("Müzik", audioTrack?.clips.orEmpty().map { it.id to (project.assets.firstOrNull { a -> a.id == it.assetId }?.let { a -> Path.of(java.net.URI(a.uri)).fileName.toString() } ?: "Ses") }, null, {}, playheadMs, duration, { playheadMs = it })
-                    }
+                    TimelineLane(
+                        name = "Video",
+                        blocks = videoBlocks,
+                        totalMs = timelineTotal,
+                        selectedId = selectedClipId,
+                        thumbnails = thumbnails,
+                        onSelect = { selectedClipId = it },
+                        onSeek = { playheadMs = it },
+                    )
+                    TimelineLane(
+                        name = "Metin",
+                        blocks = textBlocks,
+                        totalMs = timelineTotal,
+                        selectedId = null,
+                        thumbnails = thumbnails,
+                        onSelect = {},
+                        onSeek = { playheadMs = it },
+                    )
+                    TimelineLane(
+                        name = "Müzik",
+                        blocks = audioBlocks,
+                        totalMs = timelineTotal,
+                        selectedId = null,
+                        thumbnails = thumbnails,
+                        onSelect = {},
+                        onSeek = { playheadMs = it },
+                    )
                 }
             }
-            Surface(Modifier.width(300.dp).fillMaxHeight(), color = surface, border = BorderStroke(1.dp, edge), shape = RoundedCornerShape(10.dp)) {
-                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("GELİŞMİŞ: KOMUT", color = muted, fontSize = 12.sp, letterSpacing = 1.sp)
-                    Text("M1'de yapay zekâ yok. JSON komutunu düzenleyip gönder.", color = muted, fontSize = 12.sp)
-                    OutlinedTextField(command, { command = it }, Modifier.fillMaxWidth().weight(1f), label = { Text("JSON komutu", color = muted) }, placeholder = { Text("{\"op\":...}", color = muted) }, textStyle = TextStyle(color = paper, fontFamily = FontFamily.Monospace, fontSize = 12.sp), minLines = 8)
-                    Button(onClick = { execute(command) }, Modifier.fillMaxWidth(), enabled = command.isNotBlank()) { Text("Komutu gönder") }
-                    selectedClip?.let { clip ->
-                        Text("KLİP AYRINTILARI", color = muted, fontSize = 12.sp)
-                        var inText by remember(clip.id, clip.inMs) { mutableStateOf(clip.inMs.toString()) }
-                        var outText by remember(clip.id, clip.outMs) { mutableStateOf(clip.outMs.toString()) }
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            OutlinedTextField(inText, { inText = it }, Modifier.weight(1f).testTag("in-point"), label = { Text("Giriş ms") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), singleLine = true)
-                            OutlinedTextField(outText, { outText = it }, Modifier.weight(1f), label = { Text("Çıkış ms") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), singleLine = true)
-                        }
-                        Button(onClick = { execute("""{"op":"trim_clip","clipId":"${clip.id}","inMs":${inText.toLongOrNull() ?: clip.inMs},"outMs":${outText.toLongOrNull() ?: clip.outMs}}""") }, Modifier.fillMaxWidth()) { Text("Kırpmayı uygula") }
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                            OutlinedButton(onClick = { val at = videoTrack!!.clips.indexOfFirst { it.id == clip.id }; if (at > 0) execute("""{"op":"move_clip","clipId":"${clip.id}","toIndex":${at - 1}}""") }, Modifier.weight(1f)) { Text("Sola") }
-                            OutlinedButton(onClick = { val at = videoTrack!!.clips.indexOfFirst { it.id == clip.id }; if (at < videoTrack!!.clips.lastIndex) execute("""{"op":"move_clip","clipId":"${clip.id}","toIndex":${at + 1}}""") }, Modifier.weight(1f)) { Text("Sağa") }
-                            OutlinedButton(onClick = { execute("""{"op":"delete_clip","clipId":"${clip.id}"}"""); selectedClipId = null }, Modifier.weight(1f)) { Text("Sil") }
-                        }
+            PopiPanel(Modifier.width(300.dp).fillMaxHeight(), padding = 14.dp, spacing = 10.dp) {
+                Text("GELİŞMİŞ: KOMUT", color = PopiColors.textMuted, fontSize = 12.sp, letterSpacing = 1.sp)
+                Text("M1'de yapay zekâ yok. JSON komutunu düzenleyip gönder.", color = PopiColors.textMuted, fontSize = 12.sp)
+                OutlinedTextField(
+                    value = command,
+                    onValueChange = { command = it },
+                    modifier = Modifier.fillMaxWidth().weight(1f).testTag("command-input"),
+                    label = { Text("JSON komutu", color = PopiColors.textMuted) },
+                    placeholder = { Text("{\"op\":...}", color = PopiColors.textMuted) },
+                    textStyle = TextStyle(color = PopiColors.text, fontFamily = PopiFonts.mono, fontSize = 12.sp),
+                    minLines = 8,
+                )
+                Button(onClick = { execute(command) }, Modifier.fillMaxWidth(), enabled = command.isNotBlank()) { Text("Komutu gönder") }
+                selectedClip?.let { clip ->
+                    val clips = videoTrack?.clips.orEmpty()
+                    Text("KLİP AYRINTILARI", color = PopiColors.textMuted, fontSize = 12.sp)
+                    var inText by remember(clip.id, clip.inMs) { mutableStateOf(clip.inMs.toString()) }
+                    var outText by remember(clip.id, clip.outMs) { mutableStateOf(clip.outMs.toString()) }
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        OutlinedTextField(
+                            value = inText,
+                            onValueChange = { inText = it },
+                            modifier = Modifier.weight(1f).testTag("in-point"),
+                            label = { Text("Giriş ms") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true,
+                        )
+                        OutlinedTextField(
+                            value = outText,
+                            onValueChange = { outText = it },
+                            modifier = Modifier.weight(1f),
+                            label = { Text("Çıkış ms") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true,
+                        )
                     }
-                    Text(message, color = muted, fontSize = 11.sp, maxLines = 2)
+                    Button(
+                        onClick = {
+                            execute("""{"op":"trim_clip","clipId":"${clip.id}","inMs":${inText.toLongOrNull() ?: clip.inMs},"outMs":${outText.toLongOrNull() ?: clip.outMs}}""")
+                        },
+                        Modifier.fillMaxWidth(),
+                    ) { Text("Kırpmayı uygula") }
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                        OutlinedButton(
+                            onClick = {
+                                val at = clips.indexOfFirst { it.id == clip.id }
+                                if (at > 0) execute("""{"op":"move_clip","clipId":"${clip.id}","toIndex":${at - 1}}""")
+                            },
+                            Modifier.weight(1f),
+                        ) { Text("Sola") }
+                        OutlinedButton(
+                            onClick = {
+                                val at = clips.indexOfFirst { it.id == clip.id }
+                                if (at < clips.lastIndex) execute("""{"op":"move_clip","clipId":"${clip.id}","toIndex":${at + 1}}""")
+                            },
+                            Modifier.weight(1f),
+                        ) { Text("Sağa") }
+                        OutlinedButton(
+                            onClick = { execute("""{"op":"delete_clip","clipId":"${clip.id}"}"""); selectedClipId = null },
+                            Modifier.weight(1f),
+                        ) { Text("Sil") }
+                    }
                 }
+                StatusLine(status)
             }
         }
     }
 }
 
-@Composable
-private fun TimelineTrack(name: String, entries: List<Pair<String, String>>, selected: String?, onSelect: (String) -> Unit, playhead: Long, duration: Long, onSeek: (Long) -> Unit) {
-    Row(Modifier.fillMaxWidth().height(44.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(name, color = muted, modifier = Modifier.width(52.dp), fontSize = 12.sp)
-        Row(Modifier.weight(1f).fillMaxHeight().background(ink, RoundedCornerShape(5.dp)).clickable { if (duration > 0) onSeek((playhead + 1000).coerceAtMost(duration)) }.padding(3.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            entries.forEach { (id, label) ->
-                Surface(Modifier.weight(1f).fillMaxHeight().clickable { onSelect(id) }, color = if (selected == id) sand else Color(0xFF303034), shape = RoundedCornerShape(4.dp)) {
-                    Box(contentAlignment = Alignment.Center) { Text(label, color = if (selected == id) ink else paper, fontSize = 10.sp, maxLines = 1) }
-                }
-            }
-        }
-    }
-}
+/** Dosya süresi (ms). FFprobe yoksa ya da okunamazsa 0 döner. */
+private fun probeDurationMs(file: File): Long = runCatching {
+    val process = ProcessBuilder("ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", file.absolutePath).start()
+    val seconds = process.inputStream.bufferedReader().readText().trim().toDoubleOrNull() ?: 0.0
+    if (process.waitFor() == 0) (seconds * 1000).toLong() else 0L
+}.getOrDefault(0L)
 
-private fun formatTime(ms: Long): String = "%02d:%02d.%1d".format(ms / 60_000, (ms / 1000) % 60, (ms % 1000) / 100)
+/** Varlık için ekranda görünecek dosya adı. */
+private fun displayName(asset: Asset): String =
+    runCatching { Path.of(URI(asset.uri)).fileName.toString() }.getOrDefault(asset.uri)
