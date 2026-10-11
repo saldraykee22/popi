@@ -25,8 +25,9 @@ object ProjectSummary {
                             val asset = assetsById[clip.assetId]
                             val kind = asset?.kind ?: "bilinmiyor"
                             val duration = asset?.durationMs?.let { "$it ms" } ?: "bilinmiyor"
-                            val volume = if (track.kind == "audio") ", seviye ${clip.volume ?: 1f}" else ""
-                            appendLine("- ${clip.id}: varlık ${clip.assetId} ($kind, $duration), ${clip.inMs}-${clip.outMs} ms$volume")
+                            val volume = ", seviye ${clip.volume ?: 1f}"
+                            val start = if (track.kind == "audio") ", zaman çizelgesinde ${clip.startMs ?: 0} ms'de başlar" else ""
+                            appendLine("- ${clip.id}: varlık ${clip.assetId} ($kind, $duration), ${clip.inMs}-${clip.outMs} ms$volume$start")
                         }
                     }
                     "text" -> {

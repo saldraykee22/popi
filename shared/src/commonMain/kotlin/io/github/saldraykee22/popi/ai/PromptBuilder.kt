@@ -31,14 +31,19 @@ class PromptBuilder {
             import_clip {assetId, trackId, index?} — video izine assetten klip ekler (tüm süre).
             trim_clip {clipId, inMs?, outMs?} — klibin kaynak içindeki giriş/çıkış noktası
               (0 <= inMs < outMs <= asset süresi). Ses izi klipleri için de geçerlidir.
-            move_clip {clipId, toIndex} — aynı iz içinde sırayı değiştirir (0 tabanlı, hedef sıra).
+            move_clip {clipId, after} — aynı iz içinde klibi "after" kimlikli klibin hemen
+              arkasına taşır; after: null ise klip başa gelir.
             delete_clip {clipId}
             add_text {trackId, text, startMs, durationMs, style?} — style:
               {sizeSp, color "#RRGGBB", position top|center|bottom}
             edit_text {itemId, text?, startMs?, durationMs?, style?} — verilmeyen alanlar korunur.
-            add_audio {assetId, trackId, inMs?, outMs?, volume?}
-            set_volume {clipId, volume 0.0–2.0} — yalnız ses izindeki kliplerde (müzik,
-              seslendirme). Video klibinin kendi sesi ayarlanamaz.
+            delete_text {itemId}
+            add_audio {assetId, trackId, inMs?, outMs?, volume?, startMs?} — startMs: sesin zaman
+              çizelgesinde başladığı an (varsayılan 0). inMs/outMs kaynak dosya içindeki aralıktır.
+            set_audio_start {clipId, startMs} — ses izindeki klibin zaman çizelgesindeki başlangıcı.
+              "Seslendirme 3. saniyede girsin" gibi istekler için bunu kullan, klibi kırpma.
+            set_volume {clipId, volume 0.0–2.0} — ses izindeki kliplerde ve video klibinin
+              kendi sesinde çalışır.
             export_project {preset "1080x1920_30", out}
             undo / redo
 

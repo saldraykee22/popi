@@ -34,3 +34,16 @@ Video izindeki klipler arka arkaya dizilir (boşluk yok); klibin zaman çizelges
 Ajan birden fazla komutu sırayla dizi olarak verebilir: `[{"op": "...", ...}, ...]`.
 Belirsiz talimatta ajan komut yerine `{"op": "clarify", "question": "..."}` döner. Bu doğru davranış sayılır.
 Desteklenmeyen istekte `{"op": "unsupported", "reason": "..."}` döner (ör. efekt, filtre, hız değiştirme v0'da yok).
+
+## v1 eklemeleri (2026-10-11, geriye uyumlu)
+Gerekçeler `mimari.md` §4'te. Motor: `shared/.../domain/CommandEngine.kt`, testler `SchemaV1Test.kt`.
+
+| op | alanlar | anlamı |
+|---|---|---|
+| `move_clip` | `clipId`, `after` (klip id ya da `null`) | Klibi `after` klibinin hemen arkasına taşır; `null` → başa. `toIndex` de geçerli, ama ikisinden tam olarak biri verilmelidir. |
+| `add_audio` | … + `startMs?` | Sesin zaman çizelgesindeki başlangıcı (varsayılan 0). |
+| `set_audio_start` | `clipId`, `startMs` | Yalnız ses izindeki klip için. |
+| `set_volume` | `clipId`, `volume` | Artık video klibinin kendi sesinde de çalışır. |
+| `delete_text` | `itemId` | Metin katmanını siler. |
+
+Ses klibi alanı: `"startMs": 3000` (yoksa 0). Kullanıcıya gösterilen "ne değişti" satırları `ChangeSummary.kt` dosyasındaki `describeChanges(before, after)` fonksiyonundan gelir.
