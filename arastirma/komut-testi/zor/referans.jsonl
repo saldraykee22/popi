@@ -1,0 +1,34 @@
+{"id":"Z01","cevap":[{"op":"set_volume","clipId":"c20","volume":0.4}]}
+{"id":"Z02","cevap":[{"op":"trim_clip","clipId":"c2","outMs":7500}]}
+{"id":"Z03","cevap":[{"op":"move_clip","clipId":"c7","toIndex":0}]}
+{"id":"Z04","cevap":[{"op":"trim_clip","clipId":"c5","outMs":10000}]}
+{"id":"Z05","cevap":[{"op":"delete_clip","clipId":"c3"}]}
+{"id":"Z06","cevap":[{"op":"move_clip","clipId":"c4","toIndex":1},{"op":"move_clip","clipId":"c2","toIndex":3}]}
+{"id":"Z07","cevap":[{"op":"edit_text","itemId":"x1","text":"Kuzey Fırını"}]}
+{"id":"Z08","cevap":[{"op":"edit_text","itemId":"x2","durationMs":6000}]}
+{"id":"Z09","cevap":[{"op":"trim_clip","clipId":"c2","outMs":12000}]}
+{"id":"Z10","cevap":[{"op":"set_volume","clipId":"c20","volume":0.5}]}
+{"id":"Z11","cevap":[{"op":"set_volume","clipId":"c21","volume":1.4}]}
+{"id":"Z12","cevap":[{"op":"trim_clip","clipId":"c5","outMs":8000}]}
+{"id":"Z13","cevap":[{"op":"delete_clip","clipId":"c6"}]}
+{"id":"Z14","cevap":[{"op":"edit_text","itemId":"x1","durationMs":1000}]}
+{"id":"Z15","cevap":[{"op":"undo"}]}
+{"id":"Z16","cevap":[{"op":"add_text","trackId":"t1","text":"Bizi takip edin","startMs":67000,"durationMs":5000}]}
+{"id":"Z17","cevap":[{"op":"clarify","question":"Müzik 60 sn, video 72 sn; ne yapayım?"}]}
+{"id":"Z18","cevap":[{"op":"unsupported","reason":"ses konumu yok"}]}
+{"id":"Z19","cevap":[{"op":"unsupported","reason":"hız yok"}]}
+{"id":"Z20","cevap":[{"op":"edit_text","itemId":"x1","style":{"color":"#FF0000"}},{"op":"edit_text","itemId":"x2","style":{"color":"#FF0000"}}]}
+{"id":"Z21","cevap":[{"op":"trim_clip","clipId":"c6","inMs":2000}]}
+{"id":"Z22","cevap":[{"op":"move_clip","clipId":"c2","toIndex":4}]}
+{"id":"Z23","cevap":[{"op":"import_clip","assetId":"a4","trackId":"v1","index":4}]}
+{"id":"Z24","cevap":[{"op":"set_volume","clipId":"c20","volume":0.0}]}
+{"id":"Z25","cevap":[{"op":"edit_text","itemId":"x1","style":{"position":"center","sizeSp":60}}]}
+{"id":"Z26","cevap":[{"op":"export_project","preset":"1080x1920_30","out":"instagram.mp4"}]}
+{"id":"Z27","cevap":[{"op":"move_clip","clipId":"c3","toIndex":0},{"op":"move_clip","clipId":"c1","toIndex":2}]}
+{"id":"Z28","cevap":[{"op":"set_volume","clipId":"c20","volume":0.4}]}
+{"id":"Z29","cevap":[{"op":"trim_clip","clipId":"c1","outMs":3000}]}
+{"id":"Z30","cevap":[{"op":"trim_clip","clipId":"c20","inMs":15000}]}
+{"id":"Z31","cevap":[{"op":"unsupported","reason":"video sesi yok"}]}
+{"id":"Z32","cevap":[{"op":"trim_clip","clipId":"c4","outMs":7000}]}
+{"id":"Z33","cevap":[{"op":"clarify","question":"Neyi?"}]}
+{"id":"Z34","cevap":[{"op":"trim_clip","clipId":"c5","outMs":15000},{"op":"move_clip","clipId":"c5","toIndex":5}]}

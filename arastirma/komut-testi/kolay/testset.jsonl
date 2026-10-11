@@ -1,0 +1,40 @@
+{"id":"T01","talimat":"Müziğin sesini 0.5 yap.","zorluk":"kolay","kategori":"ses","altin":[{"op":"set_volume","clipId":"c4","volume":0.5}]}
+{"id":"T02","talimat":"Yazıyı 'Hoş geldin' olarak değiştir.","zorluk":"kolay","kategori":"metin","altin":[{"op":"edit_text","itemId":"x1","text":"Hoş geldin"}]}
+{"id":"T03","talimat":"Başlığın süresini 5 saniyeye çıkar.","zorluk":"kolay","kategori":"metin","altin":[{"op":"edit_text","itemId":"x1","durationMs":5000}]}
+{"id":"T04","talimat":"Müziği 10 saniyede kes.","zorluk":"kolay","kategori":"kırpma","altin":[{"op":"trim_clip","clipId":"c4","outMs":10000}]}
+{"id":"T05","talimat":"Üçüncü klibi sil.","zorluk":"kolay","kategori":"silme","altin":[{"op":"delete_clip","clipId":"c3"}]}
+{"id":"T06","talimat":"Metin izine 'Hoş geldin' yazısını ekle; 3 saniyede başlasın, 2 saniye sürsün.","zorluk":"kolay","kategori":"ekleme","altin":[{"op":"add_text","trackId":"t1","text":"Hoş geldin","startMs":3000,"durationMs":2000}]}
+{"id":"T07","talimat":"Müzik dosyasının 3 ile 8 saniye arasını müzik izinin sonuna ekle.","zorluk":"kolay","kategori":"ekleme","altin":[{"op":"add_audio","assetId":"a4","trackId":"m1","inMs":3000,"outMs":8000}]}
+{"id":"T08","talimat":"Projeyi 1080x1920, 30 fps olarak son.mp4 diye dışa aktar.","zorluk":"kolay","kategori":"dışa aktarma","altin":[{"op":"export_project","preset":"1080x1920_30","out":"son.mp4"}]}
+{"id":"T09","talimat":"İkinci klibi başa taşı.","zorluk":"kolay","kategori":"taşıma","altin":[{"op":"move_clip","clipId":"c2","toIndex":0}]}
+{"id":"T10","talimat":"Birinci klibin ilk 1 saniyesini at.","zorluk":"kolay","kategori":"kırpma","altin":[{"op":"trim_clip","clipId":"c1","inMs":1000}]}
+{"id":"T11","talimat":"Müziğin sesini 1.5 yap.","zorluk":"kolay","kategori":"ses","altin":[{"op":"set_volume","clipId":"c4","volume":1.5}]}
+{"id":"T12","talimat":"Başlığın yazı boyutunu 60 yap.","zorluk":"kolay","kategori":"stil","altin":[{"op":"edit_text","itemId":"x1","style":{"sizeSp":60}}]}
+{"id":"T13","talimat":"Müziği biraz kıs.","zorluk":"orta","kategori":"ses-göreli","altin":[{"op":"set_volume","clipId":"c4","volume":0.6}]}
+{"id":"T14","talimat":"Son klibi iki saniye kısalt.","zorluk":"orta","kategori":"kırpma-göreli","altin":[{"op":"trim_clip","clipId":"c3","outMs":5000}]}
+{"id":"T15","talimat":"Birinci klibi iki saniye kısalt.","zorluk":"orta","kategori":"kırpma-göreli","altin":[{"op":"trim_clip","clipId":"c1","outMs":6000}]}
+{"id":"T16","talimat":"Sondan ikinci klibi sil.","zorluk":"orta","kategori":"silme-göreli","altin":[{"op":"delete_clip","clipId":"c2"}]}
+{"id":"T17","talimat":"Yazıyı biraz büyüt.","zorluk":"orta","kategori":"stil-göreli","altin":[{"op":"edit_text","itemId":"x1","style":{"sizeSp":60}}]}
+{"id":"T18","talimat":"Başlığı biraz uzat.","zorluk":"orta","kategori":"metin-göreli","altin":[{"op":"edit_text","itemId":"x1","durationMs":4000}]}
+{"id":"T19","talimat":"Son klibi başa taşı.","zorluk":"orta","kategori":"taşıma-göreli","altin":[{"op":"move_clip","clipId":"c3","toIndex":0}]}
+{"id":"T20","talimat":"Başlığı 2 saniye sonra başlat.","zorluk":"orta","kategori":"metin","altin":[{"op":"edit_text","itemId":"x1","startMs":2000}]}
+{"id":"T21","talimat":"Müziği 10 saniyeye kes ve sesini biraz kıs.","zorluk":"orta","kategori":"çoklu-komut","altin":[{"op":"trim_clip","clipId":"c4","outMs":10000},{"op":"set_volume","clipId":"c4","volume":0.6}]}
+{"id":"T22","talimat":"Başlığın metnini 'Yeni Sezon 2' yap ve alta al.","zorluk":"orta","kategori":"çoklu-komut","altin":[{"op":"edit_text","itemId":"x1","text":"Yeni Sezon 2"},{"op":"edit_text","itemId":"x1","style":{"position":"bottom"}}]}
+{"id":"T23","talimat":"İlk iki klibi sil.","zorluk":"orta","kategori":"çoklu-komut","altin":[{"op":"delete_clip","clipId":"c1"},{"op":"delete_clip","clipId":"c2"}]}
+{"id":"T24","talimat":"İkinci klibi 1 saniye kısalt.","zorluk":"orta","kategori":"kırpma-göreli","altin":[{"op":"trim_clip","clipId":"c2","outMs":5000}]}
+{"id":"T25","talimat":"Son klibin başından 1 saniye at.","zorluk":"orta","kategori":"kırpma-göreli","altin":[{"op":"trim_clip","clipId":"c3","inMs":1000}]}
+{"id":"T26","talimat":"Müziği biraz kıs ve başlığı 4 saniyeye çıkar.","zorluk":"orta","kategori":"çoklu-komut","altin":[{"op":"set_volume","clipId":"c4","volume":0.6},{"op":"edit_text","itemId":"x1","durationMs":4000}]}
+{"id":"T27","talimat":"Toplam süreyi 15 saniyeye indir.","zorluk":"zor","kategori":"örtük-hesap","altin":[{"op":"trim_clip","clipId":"c3","outMs":1000}]}
+{"id":"T28","talimat":"Onu iki saniye kısalt.","zorluk":"zor","kategori":"zamir","secili":"c2","altin":[{"op":"trim_clip","clipId":"c2","outMs":4000}]}
+{"id":"T29","talimat":"Bunu ikinci sıraya taşı.","zorluk":"zor","kategori":"zamir","secili":"c3","altin":[{"op":"move_clip","clipId":"c3","toIndex":1}]}
+{"id":"T30","talimat":"Başlığı videonun ortasında başlat.","zorluk":"zor","kategori":"örtük-hesap","altin":[{"op":"edit_text","itemId":"x1","startMs":10500}]}
+{"id":"T31","talimat":"Yazının süresini müziğin toplam süresine eşitle.","zorluk":"zor","kategori":"örtük-hesap","altin":[{"op":"edit_text","itemId":"x1","durationMs":21000}]}
+{"id":"T32","talimat":"İkinci klibi birincinin önüne al, sonra sonuncuyu iki saniye kısalt.","zorluk":"zor","kategori":"sıra-sayısı","altin":[{"op":"move_clip","clipId":"c2","toIndex":0},{"op":"trim_clip","clipId":"c3","outMs":5000}]}
+{"id":"T33","talimat":"Sondan ikinci klibin başından bir saniye at ve son klibi sil.","zorluk":"zor","kategori":"sıra-sayısı","altin":[{"op":"trim_clip","clipId":"c2","inMs":1000},{"op":"delete_clip","clipId":"c3"}]}
+{"id":"T34","talimat":"Yazıyı üçüncü klibin başladığı anda başlat.","zorluk":"zor","kategori":"örtük-hesap","altin":[{"op":"edit_text","itemId":"x1","startMs":14000}]}
+{"id":"T35","talimat":"Klibi sil.","zorluk":"zor","kategori":"tuzak-belirsiz","altin":[{"op":"clarify","question":"Hangi klibi silmemi istersin?"}]}
+{"id":"T36","talimat":"Müziği kısalt.","zorluk":"zor","kategori":"tuzak-belirsiz","altin":[{"op":"clarify","question":"Müziği ne kadar kısaltayım: hangi süreye ya da kaç saniye?"}]}
+{"id":"T37","talimat":"Metni değiştir.","zorluk":"zor","kategori":"tuzak-belirsiz","altin":[{"op":"clarify","question":"Metnin yerine hangi yazıyı yazayım?"}]}
+{"id":"T38","talimat":"Videoya sepya filtresi ekle.","zorluk":"zor","kategori":"tuzak-desteklenmeyen","altin":[{"op":"unsupported","reason":"Filtre efekti v0 sürümünde desteklenmiyor."}]}
+{"id":"T39","talimat":"Son klibi iki kat hızlandır.","zorluk":"zor","kategori":"tuzak-desteklenmeyen","altin":[{"op":"unsupported","reason":"Hız değiştirme v0 sürümünde desteklenmiyor."}]}
+{"id":"T40","talimat":"İki klip arasına çapraz geçiş koy.","zorluk":"zor","kategori":"tuzak-desteklenmeyen","altin":[{"op":"unsupported","reason":"Geçiş efekti v0 sürümünde desteklenmiyor."}]}

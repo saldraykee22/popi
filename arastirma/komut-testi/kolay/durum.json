@@ -1,0 +1,24 @@
+{
+  "id": "p1",
+  "canvas": {"w": 1080, "h": 1920, "fps": 30},
+  "assets": [
+    {"id": "a1", "kind": "video", "uri": "klip1.mp4", "durationMs": 8000},
+    {"id": "a2", "kind": "video", "uri": "klip2.mp4", "durationMs": 6000},
+    {"id": "a3", "kind": "video", "uri": "klip3_yatay.mp4", "durationMs": 7000},
+    {"id": "a4", "kind": "audio", "uri": "muzik.m4a", "durationMs": 30000},
+    {"id": "a5", "kind": "image", "uri": "logo.png", "durationMs": null}
+  ],
+  "tracks": [
+    {"id": "v1", "kind": "video", "clips": [
+      {"id": "c1", "assetId": "a1", "inMs": 0, "outMs": 8000},
+      {"id": "c2", "assetId": "a2", "inMs": 0, "outMs": 6000},
+      {"id": "c3", "assetId": "a3", "inMs": 0, "outMs": 7000}
+    ]},
+    {"id": "t1", "kind": "text", "items": [
+      {"id": "x1", "text": "Yeni Sezon", "startMs": 0, "durationMs": 3000, "style": {"sizeSp": 48, "color": "#FFFFFF", "position": "top"}}
+    ]},
+    {"id": "m1", "kind": "audio", "clips": [
+      {"id": "c4", "assetId": "a4", "inMs": 0, "outMs": 21000, "volume": 1.0}
+    ]}
+  ]
+}

@@ -1,0 +1,34 @@
+{"id": "Z01", "talimat": "müzik çok bağırıyor konuşmamı bastırıyor", "kontrol": "vol('c20') < 1.0 and vol('c21') >= 1.0 and sira() == ORJ_SIRA"}
+{"id": "Z02", "talimat": "hamur yoğurduğum kısım çok uzun olmuş yarısını at", "kontrol": "6500 <= dur('c2') <= 8500 and sira() == ORJ_SIRA and dur('c3') == 10000"}
+{"id": "Z03", "talimat": "en sona koyduğum logolu kapanışı başa al", "kontrol": "sira() == ['c7','c1','c2','c3','c4','c5','c6']"}
+{"id": "Z04", "talimat": "müşterinin konuştuğu yeri 10 saniyeye indir", "kontrol": "dur('c5') == 10000 and sira() == ORJ_SIRA"}
+{"id": "Z05", "talimat": "fırının içi görünen klibi tamamen çıkar", "kontrol": "sira() == ['c1','c2','c4','c5','c6','c7']"}
+{"id": "Z06", "talimat": "ikinci klip ile dördüncüyü yer değiştir", "kontrol": "sira() == ['c1','c4','c3','c2','c5','c6','c7']"}
+{"id": "Z07", "talimat": "baştaki yazıyı Kuzey Fırını yap", "kontrol": "txt('x1')['text'] == 'Kuzey Fırını' and txt('x2')['text'] == 'Ekşi Maya Ekmeği'"}
+{"id": "Z08", "talimat": "alttaki ekşi maya yazısı ekranda biraz daha uzun kalsın", "kontrol": "4000 < txt('x2')['durationMs'] <= 10000 and txt('x2')['startMs'] == 31000"}
+{"id": "Z09", "talimat": "iki nci klibi üç saniye kıssalt", "kontrol": "dur('c2') == 12000 and sira() == ORJ_SIRA"}
+{"id": "Z10", "talimat": "müziği yüzde elliye çek", "kontrol": "vol('c20') == 0.5 and vol('c21') == 1.0"}
+{"id": "Z11", "talimat": "seslendirmeyi biraz yükselt duyulmuyor", "kontrol": "1.0 < vol('c21') <= 2.0 and vol('c20') <= 1.0"}
+{"id": "Z12", "talimat": "videonun tamamı bir dakikayı geçmesin", "kontrol": "45000 <= toplam() <= 60000"}
+{"id": "Z13", "talimat": "bu klibi sil", "secili": "c6", "kontrol": "sira() == ['c1','c2','c3','c4','c5','c7']"}
+{"id": "Z14", "talimat": "bunu ekranda iki saniye daha az tut", "secili": "x1", "kontrol": "txt('x1')['durationMs'] == 1000"}
+{"id": "Z15", "talimat": "az önce kestiğim klibi eski haline getir", "gecmis": "Son işlem: {\"op\":\"trim_clip\",\"clipId\":\"c5\",\"outMs\":20000} (önceki değer outMs 25000)", "undo_kabul": true, "kontrol": "dur('c5') == 25000 and sira() == ORJ_SIRA"}
+{"id": "Z16", "talimat": "kapanış klibinin üstüne Bizi takip edin yaz", "kontrol": "any(x['text'].lower().startswith('bizi takip edin') and 67000 <= x['startMs'] < 72000 and x['startMs'] + x['durationMs'] <= 72500 for x in yeni_metinler())"}
+{"id": "Z17", "talimat": "müziği videonun bittiği yerde bitir", "kabul": ["clarify", "unsupported"], "kontrol": null, "not": "Video 72 sn, müzik 60 sn: müzik uzatılamaz; ses klibinin zaman çizelgesi konumu şemada yok."}
+{"id": "Z18", "talimat": "seslendirme baştan başlamasın selam kısmı bitince girsin", "kabul": ["clarify", "unsupported"], "kontrol": null, "not": "Ses klibinin zaman çizelgesindeki başlangıcı (offset) şemada yok."}
+{"id": "Z19", "talimat": "hepsini biraz hızlandır", "kabul": ["unsupported"], "kontrol": null}
+{"id": "Z20", "talimat": "yazıları kırmızı yap", "kontrol": "kirmizi(txt('x1')['style']['color']) and kirmizi(txt('x2')['style']['color'])"}
+{"id": "Z21", "talimat": "vitrin klibinin ilk iki saniyesi bulanık onu at", "kontrol": "klip('c6')['inMs'] == 2000 and klip('c6')['outMs'] == 7000"}
+{"id": "Z22", "talimat": "müşteri yorumundan sonra hamur yoğurma gelsin", "kontrol": "sira().index('c2') == sira().index('c5') + 1 and len(sira()) == 7"}
+{"id": "Z23", "talimat": "ekmek çıkış klibini iki kere koy", "kontrol": "sum(1 for c in vklipler() if c['assetId'] == 'a4') == 2"}
+{"id": "Z24", "talimat": "müziği tamamen kapat", "kontrol": "vol('c20') == 0.0 and vol('c21') == 1.0"}
+{"id": "Z25", "talimat": "başlığı ortala ve büyüt", "kontrol": "txt('x1')['style']['position'] == 'center' and txt('x1')['style']['sizeSp'] > 48"}
+{"id": "Z26", "talimat": "tamamdır bunu instagram için çıkar", "export_bekle": true, "kontrol": "sira() == ORJ_SIRA"}
+{"id": "Z27", "talimat": "ilk üç klibin sırasını tersine çevir", "kontrol": "sira() == ['c3','c2','c1','c4','c5','c6','c7']"}
+{"id": "Z28", "talimat": "son yaptığımı geri al", "gecmis": "Son işlem: {\"op\":\"set_volume\",\"clipId\":\"c20\",\"volume\":1.0} (önceki değer 0.4)", "undo_kabul": true, "kontrol": "vol('c20') == 0.4"}
+{"id": "Z29", "talimat": "intro yu 3 saniyeye cut la", "kontrol": "dur('c1') == 3000 and sira() == ORJ_SIRA"}
+{"id": "Z30", "talimat": "müziği şarkının 15. saniyesinden başlat", "kontrol": "klip('c20')['inMs'] == 15000"}
+{"id": "Z31", "talimat": "fırın içindeki klipte ses var mı kapat onu", "kabul": ["clarify", "unsupported"], "kontrol": null, "not": "Video klibinin kendi sesi için set_volume yok (yalnız ses izi)."}
+{"id": "Z32", "talimat": "ortadaki klibi biraz kısalt", "kabul": ["clarify"], "kontrol": "sira() == ORJ_SIRA and 7000 <= dur('c4') < 9000 and dur('c3') == 10000", "not": "7 klipte ortadaki = 4. klip (c4). clarify da kabul."}
+{"id": "Z33", "talimat": "videoyu güzelleştir", "kabul": ["clarify", "unsupported"], "kontrol": null}
+{"id": "Z34", "talimat": "müşteri yorumunun son 5 saniyesini at sonra onu vitrinden sonraya taşı", "kontrol": "dur('c5') == 15000 and klip('c5')['inMs'] == 0 and sira() == ['c1','c2','c3','c4','c6','c5','c7']"}
