@@ -65,6 +65,17 @@ Aynı yazısız arka plan, aynı marka kuralları; her model yazı katmanını S
 | DeepSeek v4.1 Flash (Evren) | ✗ (metin tarifi) | ✗ | – | `&` kaçışı yok; kutusuz ama yazı rafların üstünde, alt satır okunmuyor |
 | MiMo v2.6 Pro (Evren) | ✓ | – | – | iki denemede de SVG kodu vermedi, yalnız kararları anlattı |
 
+**Okunaklılık (WCAG kontrastı, medyan / en kötü %10 zemin)**, `arastirma/svg-kapak/kontrast.py`:
+| Model | Başlık | Alt satır | Fiyat | Marka |
+|---|---|---|---|---|
+| Gemini high | 12,5 / 11,7 | 8,2 / 7,4 | 7,6 / 7,6 | 7,3 / 7,0 |
+| Haiku high | 12,4 / 11,3 | 9,5 / 8,6 | 7,6 / 7,6 | 6,9 / 6,6 |
+| Haiku | 12,0 / 9,7 | 9,6 / 7,9 | 7,6 / 7,6 | 7,2 / 6,3 |
+| Luna high | 12,1 / 10,9 | 8,6 / 7,3 | 7,6 / 7,6 | 6,3 / 5,9 |
+| Qwen3.8 (kutusuz) | 5,0 / 2,1 | **3,4 / 1,5** | 7,3 / 6,8 | **2,2 / 1,7** |
+| DeepSeek (kutusuz, görmedi) | 3,9 / 1,0 | **2,2 / 1,0** | 7,6 / 7,6 | **1,5 / 1,2** |
+Eşik: normal yazı ≥ 4,5, büyük başlık ≥ 3. Kutulu tasarımlar rahatça geçiyor. Kutusuz iki tasarım ise ışıklı zeminde okunmuyor: ilk göz değerlendirmesi "okunaklı" demişti, Alper itiraz etti, ölçüm onu doğruladı. Kutusuz editoryal tasarım ancak bu kapıdan geçerse sunulur.
+
 Görsel girdi Evren'de ölçüldü: mimo-v2.6-pro, qwen3.8-flash-next, gemma-4-31b, qwen3-vl-30b görüyor; deepseek-v4.1-flash ve glm-5.3 görmüyor. Gemma, qwen3-vl ve glm kararsızlık nedeniyle bu turdan çıkarıldı.
 
 Zor komut setinde ek Evren sonuçları: gemma-4-31b 32/34, qwen3.8-flash-next 30/34; qwen3-vl-30b cevap üretmedi (araç çağırmaya çalıştı).
