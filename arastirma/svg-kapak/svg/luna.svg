@@ -1,0 +1,30 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <image href="arka.png" x="0" y="0" width="1080" height="1920" preserveAspectRatio="xMidYMid slice"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+    .serif { font-family: 'Fraunces', Georgia, serif; }
+    .sans { font-family: 'IBM Plex Sans', Arial, sans-serif; }
+  </style>
+  <defs>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"/>
+      <feOffset dy="3" result="offset"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.42"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Subtle ink field settles type against the irregular stone wall. -->
+  <path d="M108 350 Q540 300 972 350 L972 770 Q540 810 108 770 Z" fill="#1B2A4A" opacity="0.74"/>
+  <path d="M150 402 H930" stroke="#E8B64C" stroke-width="3" opacity="0.9"/>
+  <text id="marka" x="540" y="378" text-anchor="middle" class="sans" font-size="30" font-weight="600" letter-spacing="5" fill="#E8B64C">Kuzey Fırın</text>
+  <text id="baslik" x="540" y="505" text-anchor="middle" class="serif" font-size="76" font-weight="600" fill="#FFF8E9" filter="url(#soft-shadow)">
+    <tspan x="540" dy="0">Yeni Sezon</tspan>
+    <tspan x="540" dy="92">Ekmekleri</tspan>
+  </text>
+  <text id="alt" x="540" y="682" text-anchor="middle" class="sans" font-size="29" font-weight="400" fill="#FFF8E9">Ekşi mayalı, her sabah 07.00'de fırından</text>
+  <g id="fiyat-etiketi">
+    <rect x="293" y="1088" width="494" height="94" rx="8" fill="#1B2A4A" opacity="0.94"/>
+    <path d="M320 1105 V1165" stroke="#E8B64C" stroke-width="4"/>
+    <text id="fiyat" x="555" y="1150" text-anchor="middle" class="sans" font-size="38" font-weight="600" fill="#FFF8E9">Köy ekmeği 85 ₺</text>
+  </g>
+</svg>

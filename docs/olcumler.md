@@ -33,6 +33,26 @@ Test seti, puanlayıcı ve başlangıç durumları `arastirma/komut-testi/` klas
 - **Süre:** görsel başına ortalama ~34 sn.
 - **Karar:** arka planı model üretir, yazıyı uygulama katman olarak ekler (`icerik-ilkeleri.md`).
 
+### Düşünme seviyesinin etkisi (eşitlenmiş tekrar)
+İlk koşularda seviyeler eşit değildi: Luna medium, Gemini high, Haiku belirtilmemişti. High ile tekrar:
+| Model | Zor set, ilk koşu | Zor set, high |
+|---|---|---|
+| GPT-6 Luna | 28/34 (medium) | **33/34** |
+| Claude Haiku 5.5 | 33/34 (belirtilmemiş) | **34/34** |
+Luna high'ın tek hatası yine `move_clip` sıra belirsizliği. **Ders:** model karşılaştırmasında seviye sabitlenip yazılmalı.
+
+## Kapak yazısı: model kodla (SVG) mı, görsel model mi?
+Aynı yazısız arka plan, aynı marka kuralları; her model yazı katmanını SVG olarak yazdı, headless Edge ile 1080×1920 çizildi. Dosyalar: `arastirma/svg-kapak/`.
+| Model | SVG geçerli | 4 metin harfi harfine | Not |
+|---|---|---|---|
+| Haiku 5.5 | ✓ | ✓ | lacivert kutu + sarı hap |
+| Haiku 5.5 high | ✓ | ✓* | *başlığı iki satıra bölerken satırlar arası boşluk kayboldu |
+| Gemini 3.8 Flash high | ✓ | ✓ | lacivert kutu + sarı hap |
+| GPT-6 Luna medium | ✗ | – | `&` XML kaçışı yok, SVG açılmıyor |
+| GPT-6 Luna high | ✓ | ✓ | sol kenar çizgili kart (yapay zekâ kalıbı) |
+
+**Sonuç:** kodla çizilen yazı Türkçe karakterde ve düzenlenebilirlikte görsel modelden açık ara iyi. Ama 5 çıktının 5'i de aynı "kutu + hap düğme" kalıbında; yan yana şablon gibi duruyor. Kalıptan kaçmak için görsel modele kasıtlı boşluk bıraktırmak ve tasarım modeline marka hafızasından gelen düzen dağarcığı vermek gerekiyor (sonraki deney).
+
 ## Yerel Türkçe ses tanıma → komut (uçtan uca)
 Düzenleme komutu niteliğinde 20 cümle; iki sentetik ses (edge-tts Ahmet ve Emel), temiz ve ~15 dB gürültülü. Toplam 80 kayıt. Her motorun dökümü Claude Haiku 5.5 ile komuta çevrildi; son durum koşullarla puanlandı. Masaüstü CPU: Ryzen 5 5600.
 
