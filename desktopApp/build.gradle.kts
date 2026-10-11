@@ -34,3 +34,11 @@ tasks.register("test") {
     description = "Runs the desktop JVM test suite."
     dependsOn("desktopTest")
 }
+tasks.register<JavaExec>("runHardSet") {
+    group = "verification"
+    description = "Zor set ölçümü: uygulamanın istemi ve motoru; anahtar POPI_OLCUM_KEY ortam değişkeninden."
+    dependsOn("desktopMainClasses")
+    mainClass.set("io.github.saldraykee22.popi.desktop.olcum.HardSetRunnerKt")
+    classpath = files(layout.buildDirectory.dir("classes/kotlin/desktop/main")) + configurations.getByName("desktopRuntimeClasspath")
+    workingDir = rootProject.projectDir
+}
