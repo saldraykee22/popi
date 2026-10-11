@@ -22,4 +22,5 @@ Popi'nin ürettiği hiçbir şey "yapay zekâ yapmış" gibi görünmemeli. Bu i
 - **Varsayılan görünüm sade.** Konuşma alanı, önizleme ve klip şeridi; CapCut'ı hiç açmamış biri de anlamalı.
 - **Ayrıntılı görünüm bir dokunuş uzakta.** Çok izli zaman çizelgesi, sayısal giriş/çıkış ve klavye kısayolları (masaüstü); Premiere kullanan da aradığını bulmalı.
 - **İki görünüm aynı komutları kullanır.** Biri diğerinin "pro modu" değildir, aynı projenin iki penceresidir.
+- **Yazı varsayılan, ses isteğe bağlı.** İnsanlar çekingenlik ya da alışkanlık yüzünden derdini yazarak anlatmayı tercih eder. Giriş alanı her zaman yazı alanıdır; mikrofon içinde küçük ve ikincil bir düğmedir. Hazır öneri düğmeleri ("Sonunu kısalt", "Altyazı ekle") ne yazacağını bilmeyene yol gösterir.
 - **Model kullanıcının diliyle konuşur.** "Biraz kıs" diyene de "-6 dB" diyene de doğru işlemi yapar; cevaplarını kullanıcının kullandığı terimlerle verir.
