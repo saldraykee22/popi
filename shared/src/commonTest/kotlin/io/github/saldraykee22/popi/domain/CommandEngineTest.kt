@@ -1,4 +1,4 @@
-package io.github.saldraykee22.popi.domain
+﻿package io.github.saldraykee22.popi.domain
 
 import kotlin.test.*
 
@@ -59,5 +59,19 @@ class CommandEngineTest {
         assertFailsWith<DomainError.ClarificationRequired> { CommandEngine().executeJson("""{"op":"clarify","question":"hangi klip?"}""") }
         assertFailsWith<DomainError.Unsupported> { CommandEngine().executeJson("""{"op":"unsupported","reason":"efekt"}""") }
     }
+
+    @Test fun twentyCommandsUndoAndRedoRoundTripSerializedState() {
+        val engine = CommandEngine(initial())
+        val before = ProjectJson.encode(engine.project)
+        repeat(20) { index ->
+            engine.executeJson("""{"op":"add_text","id":"txt$index","trackId":"t1","text":"Satır $index","startMs":${index * 1000},"durationMs":900}""")
+        }
+        val after = ProjectJson.encode(engine.project)
+        repeat(20) { engine.undo() }
+        assertEquals(before, ProjectJson.encode(engine.project))
+        repeat(20) { engine.redo() }
+        assertEquals(after, ProjectJson.encode(engine.project))
+    }
+
 }
 

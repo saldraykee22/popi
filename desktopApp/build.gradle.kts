@@ -21,6 +21,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.junit.jupiter)
+                implementation("org.jetbrains.compose.ui:ui-test-junit4:1.12.1")
             }
         }
     }

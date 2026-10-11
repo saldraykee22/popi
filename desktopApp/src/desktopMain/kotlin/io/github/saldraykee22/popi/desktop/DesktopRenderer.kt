@@ -17,13 +17,19 @@ class DesktopRenderer(
     private val ffmpeg: String = "ffmpeg",
     private val ffprobe: String = "ffprobe",
 ) : RendererPort {
+    @Volatile private var activeExport: Process? = null
+
+    fun cancelExport() { activeExport?.destroy(); activeExport?.let { if (it.isAlive) it.destroyForcibly() } }
+
     override fun preview(project: Project) = RenderPreview(project.tracks.firstOrNull { it.kind == "video" }?.clips?.sumOf { it.outMs - it.inMs } ?: 0L, project.canvas.w, project.canvas.h)
 
     override fun export(request: RenderRequest, onComplete: (Result<RenderResult>) -> Unit) {
         onComplete(runCatching { RenderResult(export(request.project, Paths.get(request.outputPath)).toString()) })
     }
 
-    fun export(project: Project, output: Path): Path {
+    fun export(project: Project, output: Path): Path = export(project, output) { }
+
+    fun export(project: Project, output: Path, onProgress: (Int) -> Unit): Path {
         val videoTrack = project.tracks.firstOrNull { it.kind == "video" }
             ?: error("Project has no video track")
         require(videoTrack.clips.isNotEmpty()) { "Önce video klip ekleyin" }
@@ -101,11 +107,28 @@ class DesktopRenderer(
 
         output.toAbsolutePath().parent?.toFile()?.mkdirs()
         val command = mutableListOf(ffmpeg, "-y", "-hide_banner", "-loglevel", "error") + inputArgs +
-            listOf("-filter_complex", graph.joinToString(";"), "-map", "[vout]", "-map", "[aout]", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-movflags", "+faststart", output.toAbsolutePath().toString())
-        runChecked(command, "ffmpeg export")
+            listOf("-filter_complex", graph.joinToString(";"), "-map", "[vout]", "-map", "[aout]", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-movflags", "+faststart", "-progress", "pipe:1", "-nostats", output.toAbsolutePath().toString())
+        try { runProgress(command, videoClips.sumOf { it.outMs - it.inMs }, onProgress) }
+        catch (e: Throwable) { Files.deleteIfExists(output); throw e }
         return output.toAbsolutePath()
     }
 
+    /** Exact composition frame used by the desktop preview and by the parity gate. */
+    fun previewFrame(project: Project, timeMs: Long): java.awt.image.BufferedImage {
+        val started = System.nanoTime()
+        val movie = Files.createTempFile("popi-preview-", ".mp4")
+        val frame = Files.createTempFile("popi-frame-", ".png")
+        try {
+            export(project, movie)
+            runChecked(listOf(ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-ss", seconds(timeMs), "-i", movie.toString(), "-frames:v", "1", "-vf", "scale=540:960", frame.toString()), "preview frame")
+            val image = javax.imageio.ImageIO.read(frame.toFile()) ?: error("FFmpeg kareyi çözemedi")
+            println("Popi preview render latency: ${(System.nanoTime() - started) / 1_000_000} ms at $timeMs ms")
+            return image
+        } finally {
+            Files.deleteIfExists(movie)
+            Files.deleteIfExists(frame)
+        }
+    }
     private fun hasAudio(path: Path): Boolean {
         val result = runChecked(listOf(ffprobe, "-v", "error", "-select_streams", "a", "-show_entries", "stream=index", "-of", "csv=p=0", path.toString()), "ffprobe")
         return result.isNotBlank()
@@ -120,6 +143,25 @@ class DesktopRenderer(
         }
     }
 
+    private fun runProgress(args: List<String>, durationMs: Long, onProgress: (Int) -> Unit) {
+        val process = ProcessBuilder(args).redirectErrorStream(true).start()
+        activeExport = process
+        try {
+            process.inputStream.bufferedReader().useLines { lines ->
+                lines.forEach { line ->
+                    if (line.startsWith("out_time_ms=")) {
+                        val elapsed = line.substringAfter('=').toLongOrNull() ?: 0L
+                        onProgress(((elapsed * 100 / (durationMs * 1000).coerceAtLeast(1)).toInt()).coerceIn(0, 99))
+                    }
+                }
+            }
+            val exit = process.waitFor()
+            check(exit == 0) { "ffmpeg export başarısız (exit=$exit)" }
+            onProgress(100)
+        } finally {
+            if (activeExport === process) activeExport = null
+        }
+    }
     private fun runChecked(args: List<String>, action: String): String {
         try {
             val process = ProcessBuilder(args).redirectErrorStream(true).start()
