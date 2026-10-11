@@ -20,8 +20,9 @@ class CommandEngine(initial: Project = Project()) {
         if (project.assets.none { it.id == assetId }) throw DomainError.NotFound("asset", assetId)
         fun Project.relabel() = copy(assets = assets.map { if (it.id == assetId) it.copy(label = label) else it })
         project = project.relabel()
-        undo.replaceAll { it.relabel() }
-        redo.replaceAll { it.relabel() }
+        // replaceAll Kotlin/Native'de deneysel API; iOS derlemesi için elle döngü.
+        for (i in undo.indices) undo[i] = undo[i].relabel()
+        for (i in redo.indices) redo[i] = redo[i].relabel()
     }
 
     /** Sıradaki kısa varlık kimliği (`s1`, `s2`…); modele ve kullanıcıya uzun UUID gitmez. */
