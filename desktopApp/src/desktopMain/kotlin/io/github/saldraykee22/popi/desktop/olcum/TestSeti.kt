@@ -5,7 +5,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 /** Zor set satırının modele giden kısmı. Kontrol alanları puanlayıcıda kalır. */
-internal data class TestMaddesi(val id: String, val talimat: String)
+internal data class TestMaddesi(val id: String, val talimat: String, val secili: String? = null, val gecmis: String? = null)
 
 /** `testset2.jsonl` okuyucu: her boş olmayan satır bir JSON nesnesi. */
 internal object TestSeti {
@@ -16,6 +16,8 @@ internal object TestSeti {
             TestMaddesi(
                 id = m["id"] as? String ?: throw IllegalArgumentException("Test satırında 'id' yok"),
                 talimat = m["talimat"] as? String ?: throw IllegalArgumentException("Test ${m["id"]} içinde 'talimat' yok"),
+                secili = (m["secili"] as? String)?.takeUnless { it == "yok" },
+                gecmis = m["gecmis"] as? String,
             )
         }
 }

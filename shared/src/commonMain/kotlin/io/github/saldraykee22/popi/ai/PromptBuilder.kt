@@ -10,9 +10,17 @@ import io.github.saldraykee22.popi.domain.Project
  * durumu isteme gömülmez; onun yerine [ProjectSummary] çıktısı kullanıcı mesajına eklenir.
  */
 class PromptBuilder {
-    fun build(userText: String, project: Project): LlmRequest = LlmRequest(
+    fun build(userText: String, project: Project, context: EditContext = EditContext()): LlmRequest = LlmRequest(
         system = SYSTEM_PROMPT,
-        user = ProjectSummary.summarize(project) + "\n\nKullanıcının isteği: " + userText,
+        user = buildString {
+            append(ProjectSummary.summarize(project))
+            append("\n\nSeçili öğe: ").append(context.selectedId ?: "yok")
+            if (context.recentActions.isNotEmpty()) {
+                append("\nSon işlemler (en yeni önce):")
+                context.recentActions.take(5).forEach { append("\n- ").append(it) }
+            }
+            append("\n\nKullanıcının isteği: ").append(userText)
+        },
     )
 
     companion object {
@@ -45,7 +53,10 @@ class PromptBuilder {
             set_volume {clipId, volume 0.0–2.0} — ses izindeki kliplerde ve video klibinin
               kendi sesinde çalışır.
             export_project {preset "1080x1920_30", out}
-            undo / redo
+            undo / redo — "az önce yaptığımı geri al" gibi istekler son işlemi geri almaksa
+              [{"op":"undo"}] kullan.
+
+            "Bu", "bunu", "bu klip" gibi ifadeler "Seçili öğe" satırındaki öğeyi gösterir.
 
             Video izindeki klipler arka arkaya oynar; zaman çizelgesindeki konumları sıradan gelir.
             Ses izindeki kliplerin başlangıç konumu projede verilir. Hız, filtre, geçiş efekti ve

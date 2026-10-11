@@ -12,6 +12,9 @@ sealed interface Proposal {
      */
     data class Ready(val commandsJson: String, val before: Project, val after: Project) : Proposal
 
+    /** Model geçmiş adımı istedi ("undo" ya da "redo"); arayüz gerçek motorda uygular, kopya motorda geçmiş yoktur. */
+    data class HistoryStep(val op: String) : Proposal
+
     /** Model ek bilgi istedi. */
     data class NeedsClarification(val question: String) : Proposal
 
@@ -33,11 +36,12 @@ class AiEditor(
     private val parser: ResponseParser = ResponseParser(),
 ) {
     /** Onay ekranında gösterilecek ve modele gönderilecek içerik: birebir aynıdır. */
-    fun outgoing(userText: String, project: Project): LlmRequest = promptBuilder.build(userText, project)
+    fun outgoing(userText: String, project: Project, context: EditContext = EditContext()): LlmRequest =
+        promptBuilder.build(userText, project, context)
 
-    fun propose(userText: String, project: Project, transport: LlmTransport): Proposal {
+    fun propose(userText: String, project: Project, transport: LlmTransport, context: EditContext = EditContext()): Proposal {
         val response = try {
-            transport.complete(outgoing(userText, project))
+            transport.complete(outgoing(userText, project, context))
         } catch (e: Exception) {
             return Proposal.Failed(e.message ?: e.toString())
         }
@@ -50,6 +54,7 @@ class AiEditor(
     }
 
     private fun dryRun(commandsJson: String, project: Project): Proposal {
+        HISTORY_OP.find(commandsJson)?.let { return Proposal.HistoryStep(it.groupValues[1]) }
         val engine = CommandEngine(project)
         try {
             engine.executeJson(commandsJson)
@@ -59,5 +64,10 @@ class AiEditor(
             return Proposal.Rejected(e.message ?: e.toString())
         }
         return Proposal.Ready(commandsJson, project, engine.project)
+    }
+
+    private companion object {
+        /** Tek başına undo/redo dizisi; motor bunları başka komutla birlikte zaten reddeder. */
+        val HISTORY_OP = Regex("""^\s*\[?\s*\{\s*"op"\s*:\s*"(undo|redo)"\s*}\s*]?\s*$""")
     }
 }

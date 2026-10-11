@@ -27,6 +27,22 @@ class AiEditorTest {
         assertEquals(project, ready.before)
     }
 
+    @Test fun undoBecomesHistoryStep() {
+        val proposal = editor.propose("son yaptığımı geri al", sampleProject(), Capture("""[{"op":"undo"}]"""))
+        assertEquals(Proposal.HistoryStep("undo"), proposal)
+    }
+
+    @Test fun contextGoesIntoOutgoingAndIsSent() {
+        val transport = Capture("""[{"op":"delete_clip","clipId":"c2"}]""")
+        val context = EditContext(selectedId = "c2", recentActions = listOf("Müzik (a1) sesi: %100 → %40"))
+        editor.propose("bu klibi sil", sampleProject(), transport, context)
+        val sent = transport.last!!
+        assertEquals(editor.outgoing("bu klibi sil", sampleProject(), context), sent)
+        assertContains(sent.user, "Seçili öğe: c2")
+        assertContains(sent.user, "Müzik (a1) sesi: %100 → %40")
+        assertContains(editor.outgoing("x", sampleProject()).user, "Seçili öğe: yok")
+    }
+
     @Test fun engineRejectionBecomesRejected() {
         val transport = Capture("""[{"op":"trim_clip","clipId":"c1","inMs":100,"outMs":999999}]""")
         val proposal = editor.propose("kırp", sampleProject(), transport)

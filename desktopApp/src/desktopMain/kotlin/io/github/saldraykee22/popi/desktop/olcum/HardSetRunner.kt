@@ -1,6 +1,7 @@
 package io.github.saldraykee22.popi.desktop.olcum
 
 import io.github.saldraykee22.popi.ai.AiEditor
+import io.github.saldraykee22.popi.ai.EditContext
 import io.github.saldraykee22.popi.ai.GeminiTransport
 import io.github.saldraykee22.popi.ai.LlmRequest
 import io.github.saldraykee22.popi.ai.LlmTransport
@@ -186,7 +187,7 @@ internal class HardSetRunner(
         val yeniden = YenidenDeneyen(taban, geriCekilmeMs, beklet)
         val kayit = KayitliTransport(yeniden)
         val sonuc: Proposal = try {
-            AiEditor().propose(t.talimat, proje, kayit)
+            AiEditor().propose(t.talimat, proje, kayit, EditContext(t.secili, listOfNotNull(t.gecmis)))
         } catch (e: Exception) {
             Proposal.Failed(redakte(e.message ?: e.toString(), anahtar))
         }
@@ -212,6 +213,7 @@ internal class HardSetRunner(
         val hata: String?
         when (sonuc) {
             is Proposal.Ready -> { dryRun = "kabul"; neden = null; hata = null }
+            is Proposal.HistoryStep -> { dryRun = sonuc.op; neden = null; hata = null }
             is Proposal.NeedsClarification -> { dryRun = "soru"; neden = sonuc.question; hata = null }
             is Proposal.Rejected -> { dryRun = "red"; neden = sonuc.reason; hata = null }
             is Proposal.Failed -> { dryRun = "hata"; neden = null; hata = sonuc.detail }
