@@ -27,6 +27,15 @@ Durum: 2026-10-11, ölçümlerle desteklenen ilk kararlar. Bir karar değişirse
 3. Önizlemeyi değişikliğe göre güncellemek. Media3'te her düzenleme kompozisyonu baştan kuruyor (androidx/media #3204); gecikme ölçülüp gerekirse önbellek eklenir.
 4. Isınma ve pil izleme. Kararlar gerçek cihaz ölçümüyle verilir; emülatör yalnızca işlev testidir.
 
+### Önizleme ve dışa aktarma kabul şartnamesi
+- **Önizleme taslaktır; doğru olan dışa aktarmadır.** Aynı platformda bile ikisi farklılaşabiliyor (androidx/media #2866, #2439, #2810).
+- Her `RendererPort` uygulaması aynı test şartnamesinden geçer:
+  - ffprobe ile çözünürlük, süre (±100 ms) ve akışlar;
+  - belirli anlardan kare çıkarıp referansla karşılaştırma (PSNR eşiği);
+  - frekans bandıyla ses içeriği (her klibin sesi ve müzik ayrı ayrı duyulmalı).
+- "Dosya var" ya da "ses izi var" kontrolü yeterli sayılmaz.
+- İlk sürümde önizleme bilerek sade tutulur: tek sequence. Takılırsa önizleme, dışa aktarılan ara dosya üzerinden yapılır.
+
 ## 4. Komut motoru
 - Tek sözleşme: [`komut-semasi.md`](komut-semasi.md). Manuel arayüz ve yapay zekâ aynı komutları üretir.
 - Motor her komutu doğrular. Geçersiz komut durumu değiştirmez; örneğin modelin ürettiği "60 sn'lik müziği 72 sn'ye uzat" komutu reddedilir.
@@ -35,6 +44,7 @@ Durum: 2026-10-11, ölçümlerle desteklenen ilk kararlar. Bir karar değişirse
   - Ses klibine zaman çizelgesi başlangıcı (`startMs`) eklenecek. "Seslendirme selamdan sonra girsin" isteği şemada karşılık bulamadı; modeller bu durumda yanlışlıkla klibin başını kesti.
   - Video klibinin kendi sesi için `set_volume` desteği gelecek.
   - Metin silme komutu (`delete_text`) eklenecek.
+- **Şemaya yeni komut ekleme kuralı:** bir komut ancak şu üçü sağlanınca girer: en az 2 bağımsız kullanıcı senaryosu, hedef motorlarda destek, ve geçersiz kullanımı reddeden bir test. Şemanın yapamadığı istekler `unsupported` ile dürüstçe reddedilir; her hata için şema genişletilmez.
 
 ## 5. Model sağlayıcıları (BYOK)
 - Arayüz: `LLMProvider`, `ImageProvider`, `STTProvider`, `TTSProvider`.
@@ -42,7 +52,19 @@ Durum: 2026-10-11, ölçümlerle desteklenen ilk kararlar. Bir karar değişirse
 - Kolay bağlantı: OpenRouter OAuth PKCE. Kullanıcı anahtar kopyalamaz.
 - Varsayılan önerilerin ölçümleri `docs/olcumler.md` dosyasında.
 
+### Gizlilik
+BYOK kullanıldığında kullanıcının seçtiği içerik (istek metni, proje özeti, görsel) seçtiği model sağlayıcısına gönderilir. Gönderilecek içerik önce gösterilir ve onaylanır; onay olmadan medya ya da hafıza buluta gitmez.
+
 ## 6. Hafıza
 - Cihazda, insan tarafından okunabilir markdown dosyaları: `marka/`, `projeler/`, `tercihler/`. Her kayıtta kaynak ve tarih tutulur ("siz söylediniz", "düzeltmenizden çıkardım").
 - Hızlı arama için yanında SQLite indeksi.
 - Ajana vault'un tamamı değil, yalnızca ilgili özet verilir. Kullanıcı her kaydı görebilir, silebilir ve dışa aktarabilir.
+
+## 7. Masaüstünde FFmpeg: lisans ve dağıtım yükümlülükleri
+FFmpeg'in resmî uyum listesine göre (https://ffmpeg.org/legal.html):
+- Yalnız LGPL derleme kullanılır: `--enable-gpl` ve `--enable-nonfree` kapalı; libx264 gibi GPL kütüphaneler dahil edilmez.
+- FFmpeg dinamik bağlanır (Windows'ta DLL) ya da ayrı bir çalıştırılabilir dosya olarak çağrılır.
+- Dağıtılan sürümün kaynak kodu, ikili dosyayla aynı yerde yayımlanır.
+- İndirme sayfasında, "Hakkında" ekranında ve lisans metninde LGPL bildirimi yer alır; tersine mühendislik yasağı konmaz.
+- H.264/AAC patent riski ayrıca değerlendirilir. Mümkünse işletim sisteminin kendi kodlayıcıları kullanılır: Windows'ta Media Foundation, macOS'ta VideoToolbox.
+- Alternatifler (GStreamer, libmpv) masaüstü motoru kesinleşmeden önce lisans profiline göre karşılaştırılacak.
