@@ -13,7 +13,7 @@ Durum: 2026-10-11, ölçümlerle desteklenen ilk kararlar. Bir karar değişirse
   | Masaüstü (Windows, macOS, Linux) | FFmpeg (LGPL derlemesi) ile çözülen kareler | FFmpeg |
 - **Neden Flutter ya da React Native değil?** Video motoru orada da yerel kalmak zorunda. Bu çerçeveler yalnızca bir dil ve bir köprü katmanı daha ekler.
 - **iOS derlemesi Mac gerektirir.** Bu yüzden iOS hedefi baştan GitHub Actions'ın macOS makinesinde derlenir; ortak kodun iOS'ta bozulmadığı her commit'te görülür.
-- **Yayın sırası:** Android → masaüstü → iOS. Mimari üçünü de baştan destekler.
+- **Yayın sırası (Alper, 2026-10-11):** ilk alfa **Windows masaüstü** (dağıtımı en kolay: indirme bağlantısı yeter, mağaza onayı ve cihaz matrisi gerekmez). Mağaza yayını olursa önce Android, sonra iOS. Her adımda kod diğer platformları gözetir: iş mantığı `commonMain`'de kalır, platforma özel kod yalnız `RendererPort` ve dosya/anahtar erişimi gibi ince arayüzlerin arkasındadır. CI her commit'te üç platformu derler.
 
 ## 2. İşlemci kullanımı
 - **Video çözme ve kodlama:** donanım kodlayıcı (MediaCodec, VideoToolbox; masaüstünde FFmpeg'in donanım hızlandırması varsa o).
@@ -68,3 +68,4 @@ FFmpeg'in resmî uyum listesine göre (https://ffmpeg.org/legal.html):
 - İndirme sayfasında, "Hakkında" ekranında ve lisans metninde LGPL bildirimi yer alır; tersine mühendislik yasağı konmaz.
 - H.264/AAC patent riski ayrıca değerlendirilir. Mümkünse işletim sisteminin kendi kodlayıcıları kullanılır: Windows'ta Media Foundation, macOS'ta VideoToolbox.
 - Alternatifler (GStreamer, libmpv) masaüstü motoru kesinleşmeden önce lisans profiline göre karşılaştırılacak.
+
