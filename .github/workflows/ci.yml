@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Verify JVM, Android, and desktop
+        run: ./gradlew --no-daemon :shared:desktopTest :androidApp:assembleDebug :desktopApp:test
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Link iOS Simulator framework
+        run: ./gradlew --no-daemon :shared:linkDebugFrameworkIosSimulatorArm64
+
+  windows-desktop:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install FFmpeg
+        run: choco install ffmpeg -y --no-progress
+      - name: Verify Windows desktop export
+        run: .\gradlew.bat --no-daemon :desktopApp:test
