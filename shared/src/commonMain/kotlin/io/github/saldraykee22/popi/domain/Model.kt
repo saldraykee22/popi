@@ -10,6 +10,8 @@ import kotlinx.serialization.Serializable
     val inMs: Long = 0,
     val outMs: Long,
     val volume: Float? = null,
+    /** Yalnız ses izindeki klip için: klibin zaman çizelgesindeki başlangıcı. null = 0. */
+    val startMs: Long? = null,
 )
 @Serializable data class TextStyle(val sizeSp: Int = 48, val color: String = "#FFFFFF", val position: String = "center")
 @Serializable data class TextItem(val id: String, val text: String, val startMs: Long, val durationMs: Long, val style: TextStyle = TextStyle())
