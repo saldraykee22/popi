@@ -69,7 +69,9 @@ import io.github.saldraykee22.popi.desktop.ui.TimelineBlock
 import io.github.saldraykee22.popi.desktop.ui.TimelineLane
 import io.github.saldraykee22.popi.desktop.ui.formatTimecode
 import io.github.saldraykee22.popi.desktop.ui.planMediaImport
+import io.github.saldraykee22.popi.ai.EditContext
 import io.github.saldraykee22.popi.domain.Asset
+import io.github.saldraykee22.popi.domain.describeChanges
 import io.github.saldraykee22.popi.domain.Clip
 import io.github.saldraykee22.popi.domain.CommandEngine
 import io.github.saldraykee22.popi.domain.Project
@@ -84,7 +86,6 @@ import java.awt.dnd.DropTargetDropEvent
 import java.io.File
 import java.net.URI
 import java.nio.file.Path
-import java.util.UUID
 import kotlin.concurrent.thread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -165,6 +166,7 @@ internal fun DesktopScreen(
     var projectName by remember { mutableStateOf(restored?.first ?: "Adsız Proje") }
     var status by remember { mutableStateOf(StatusMessage("Hazır")) }
     var selectedClipId by remember { mutableStateOf<String?>(null) }
+    var recentActions by remember { mutableStateOf(emptyList<String>()) }
     var playheadMs by remember { mutableLongStateOf(0L) }
     var playing by remember { mutableStateOf(false) }
     var exportRunning by remember { mutableStateOf(false) }
@@ -187,12 +189,19 @@ internal fun DesktopScreen(
         runCatching { store.save(projectName, project); status = StatusMessage("Kaydedildi") }
             .onFailure { status = StatusMessage("Kaydetme hatası: ${it.message}", true) }
     }
+    /** Modelin "az önce yaptığımı geri al" isteğini anlaması için son değişiklik satırları (en yeni önce). */
+    fun noteChanges(before: Project, prefix: String = "") {
+        val lines = describeChanges(before, engine.project).map { prefix + it }
+        if (lines.isNotEmpty()) recentActions = (lines + recentActions).take(5)
+    }
     fun execute(json: String) {
-        runCatching { engine.executeJson(json); refresh(); save(); status = StatusMessage("Düzenleme uygulandı") }
+        val before = engine.project
+        runCatching { engine.executeJson(json); noteChanges(before); refresh(); save(); status = StatusMessage("Düzenleme uygulandı") }
             .onFailure { status = StatusMessage(it.message ?: "Komut uygulanamadı", true) }
     }
     fun undoEdit() {
-        runCatching { engine.undo(); refresh(); save(); status = StatusMessage("Geri alındı") }
+        val before = engine.project
+        runCatching { engine.undo(); noteChanges(before, "Geri alındı: "); refresh(); save(); status = StatusMessage("Geri alındı") }
             .onFailure { status = StatusMessage(it.message ?: "Geri alınacak işlem yok", true) }
     }
     fun redoEdit() {
@@ -210,11 +219,7 @@ internal fun DesktopScreen(
         }
     }
     fun renameAsset(asset: Asset, label: String) {
-        val clean = label.trim().ifBlank { null }
-        val updated = engine.project.copy(
-            assets = engine.project.assets.map { if (it.id == asset.id) it.copy(label = clean) else it },
-        )
-        engine = CommandEngine(updated)
+        engine.relabelAsset(asset.id, label.trim().ifBlank { null })
         refresh()
         save()
     }
@@ -222,7 +227,7 @@ internal fun DesktopScreen(
         val plan = planMediaImport(files) { it.name }
         val result = runCatching {
             plan.accepted.forEach { (file, kind) ->
-                val id = "asset-${UUID.randomUUID()}"
+                val id = engine.nextAssetId()
                 val label = file.name.substringBeforeLast('.', file.name)
                 engine.registerAssets(listOf(Asset(id, kind.wire, file.toURI().toString(), probeDurationMs(file), label)))
                 when (kind) {
@@ -398,6 +403,7 @@ internal fun DesktopScreen(
                     onApply = { execute(it) },
                     onUndo = { undoEdit() },
                     modifier = Modifier.weight(1f).fillMaxWidth(),
+                    context = { EditContext(selectedClipId, recentActions) },
                 )
                 selectedClip?.let { clip ->
                     ClipDetails(

@@ -15,6 +15,23 @@ class SchemaV1Test {
         return e
     }
 
+    @Test fun relabelKeepsHistoryAndAppliesToSnapshots() {
+        val e = withThreeClips()
+        e.relabelAsset("v2", "hamur yoğurma")
+        assertEquals("hamur yoğurma", e.project.assets.first { it.id == "v2" }.label)
+        assertTrue(e.canUndo())
+        e.undo()
+        assertEquals("hamur yoğurma", e.project.assets.first { it.id == "v2" }.label, "Geri alma etiketi eski hâline döndürmemeli")
+        assertFailsWith<DomainError.NotFound> { e.relabelAsset("yok", "x") }
+    }
+
+    @Test fun nextAssetIdIsShortAndUnique() {
+        val e = CommandEngine(Project())
+        assertEquals("s1", e.nextAssetId())
+        e.registerAssets(listOf(Asset("s1", "video", "file:///a.mp4", 1000), Asset("s7", "audio", "file:///b.m4a", 1000)))
+        assertEquals("s8", e.nextAssetId())
+    }
+
     private fun videoOrder(p: Project) = p.tracks.first { it.id == "v1" }.clips.map { it.id }
     private fun audioClip(p: Project, id: String) = p.tracks.first { it.id == "m1" }.clips.first { it.id == id }
 

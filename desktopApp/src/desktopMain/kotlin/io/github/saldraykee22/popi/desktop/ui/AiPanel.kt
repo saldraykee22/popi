@@ -1,5 +1,6 @@
 package io.github.saldraykee22.popi.desktop.ui
 
+import io.github.saldraykee22.popi.ai.EditContext
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -57,6 +58,7 @@ fun AiPanel(
     onApply: (String) -> Unit,
     onUndo: () -> Unit,
     modifier: Modifier = Modifier,
+    context: () -> EditContext = { EditContext() },
 ) {
     var text by remember { mutableStateOf("") }
     var advancedExpanded by remember { mutableStateOf(false) }
@@ -76,7 +78,7 @@ fun AiPanel(
         )
         Button(
             onClick = {
-                controller.request(text, project)
+                controller.request(text, project, context())
                 text = ""
             },
             modifier = Modifier.fillMaxWidth().testTag("ai-send"),
@@ -93,6 +95,7 @@ fun AiPanel(
                 is AiPanelState.Approval -> ApprovalCard(state, controller, scope)
                 is AiPanelState.Sending -> SendingCard(controller)
                 is AiPanelState.Ready -> ChangeCard(state, controller, onApply, onUndo)
+                is AiPanelState.History -> HistoryCard(state, controller, onApply)
                 is AiPanelState.Clarify -> ClarifyCard(state, controller)
                 is AiPanelState.Rejected -> MessageCard(state.reason)
                 is AiPanelState.Failed -> MessageCard(state.detail)
@@ -240,6 +243,24 @@ private fun ChangeCard(
                 Button(onClick = { onApply(state.commandsJson); controller.markApplied() }, modifier = Modifier.testTag("ai-apply")) { Text("Uygula") }
                 TextButton(onClick = { controller.dismiss() }) { Text("Vazgeç", color = PopiColors.textMuted) }
             }
+        }
+    }
+}
+
+@Composable
+private fun HistoryCard(state: AiPanelState.History, controller: AiPanelController, onApply: (String) -> Unit) {
+    Card {
+        Text(
+            if (state.op == "undo") "Son işlem geri alınacak" else "Geri alınan işlem yinelenecek",
+            color = PopiColors.text,
+            fontSize = 13.sp,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(
+                onClick = { onApply("""{"op":"${state.op}"}"""); controller.dismiss() },
+                modifier = Modifier.testTag("ai-history"),
+            ) { Text("Uygula") }
+            TextButton(onClick = { controller.dismiss() }) { Text("Vazgeç", color = PopiColors.textMuted) }
         }
     }
 }

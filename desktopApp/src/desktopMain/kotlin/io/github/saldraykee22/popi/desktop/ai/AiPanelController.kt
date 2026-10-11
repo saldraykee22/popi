@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.saldraykee22.popi.ai.AiEditor
+import io.github.saldraykee22.popi.ai.EditContext
 import io.github.saldraykee22.popi.ai.LlmRequest
 import io.github.saldraykee22.popi.ai.Proposal
 import io.github.saldraykee22.popi.desktop.secrets.OpenRouterOAuth
@@ -26,7 +27,12 @@ sealed interface AiPanelState {
     data object Idle : AiPanelState
 
     /** Gönderilecek içerik onay bekliyor. */
-    data class Approval(val outgoing: LlmRequest, val userText: String, val project: Project) : AiPanelState
+    data class Approval(
+        val outgoing: LlmRequest,
+        val userText: String,
+        val project: Project,
+        val context: EditContext = EditContext(),
+    ) : AiPanelState
 
     /** İstek arka planda gönderiliyor. */
     data class Sending(val outgoing: LlmRequest, val userText: String, val project: Project) : AiPanelState
@@ -39,6 +45,9 @@ sealed interface AiPanelState {
         val userText: String,
         val applied: Boolean,
     ) : AiPanelState
+
+    /** Model geçmiş adımı istedi ("undo" ya da "redo"); uygulanınca gerçek motorda çalışır. */
+    data class History(val op: String) : AiPanelState
 
     /** Model ek bilgi istedi. */
     data class Clarify(val question: String, val userText: String) : AiPanelState
@@ -99,15 +108,15 @@ class AiPanelController(
     }
 
     /** İsteği onay kartına taşır. Bağlantı yoksa "Bağlan" kartı gösterilir. */
-    fun request(userText: String, project: Project) {
+    fun request(userText: String, project: Project, context: EditContext = EditContext()) {
         if (userText.isBlank()) return
         if (!connected()) {
             state = AiPanelState.Disconnected
             return
         }
         val combined = combineWithClarification(userText)
-        val outgoing = editor.outgoing(combined, project)
-        state = AiPanelState.Approval(outgoing, combined, project)
+        val outgoing = editor.outgoing(combined, project, context)
+        state = AiPanelState.Approval(outgoing, combined, project, context)
     }
 
     private fun combineWithClarification(userText: String): String {
@@ -124,7 +133,7 @@ class AiPanelController(
         sendJob?.cancel()
         sendJob = scope.launch {
             val proposal = withContext(Dispatchers.Default) {
-                editor.propose(approval.userText, approval.project, transport)
+                editor.propose(approval.userText, approval.project, transport, approval.context)
             }
             when (proposal) {
                 is Proposal.Ready -> {
@@ -136,6 +145,10 @@ class AiPanelController(
                 is Proposal.NeedsClarification -> {
                     pendingClarification = approval.userText to proposal.question
                     state = AiPanelState.Clarify(proposal.question, approval.userText)
+                }
+                is Proposal.HistoryStep -> {
+                    pendingClarification = null
+                    state = AiPanelState.History(proposal.op)
                 }
                 is Proposal.Rejected -> state = AiPanelState.Rejected(proposal.reason)
                 is Proposal.Failed -> state = AiPanelState.Failed(proposal.detail)

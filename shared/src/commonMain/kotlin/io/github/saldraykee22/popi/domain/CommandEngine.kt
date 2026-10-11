@@ -15,6 +15,21 @@ class CommandEngine(initial: Project = Project()) {
         project = project.copy(assets = project.assets + assets.filterNot { it.id in known })
     }
 
+    /** Etiket düzenleme bir düzenleme adımı değildir: geçmişe girmez ve undo yığınını silmez. */
+    fun relabelAsset(assetId: String, label: String?) {
+        if (project.assets.none { it.id == assetId }) throw DomainError.NotFound("asset", assetId)
+        fun Project.relabel() = copy(assets = assets.map { if (it.id == assetId) it.copy(label = label) else it })
+        project = project.relabel()
+        undo.replaceAll { it.relabel() }
+        redo.replaceAll { it.relabel() }
+    }
+
+    /** Sıradaki kısa varlık kimliği (`s1`, `s2`…); modele ve kullanıcıya uzun UUID gitmez. */
+    fun nextAssetId(): String {
+        val used = project.assets.mapNotNull { it.id.removePrefix("s").toIntOrNull() }
+        return "s${(used.maxOrNull() ?: 0) + 1}"
+    }
+
     fun executeJson(json: String): Project {
         val parsed = try { Json.parseToJsonElement(json) } catch (e: Exception) { throw DomainError.InvalidCommand("JSON: ${e.message}") }
         val commands = if (parsed is JsonArray) parsed else JsonArray(listOf(parsed))
