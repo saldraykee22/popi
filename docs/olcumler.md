@@ -61,8 +61,15 @@ Aynı yazısız arka plan, aynı marka kuralları; her model yazı katmanını S
 | Gemini 3.8 Flash high | ✓ | ✓ | ✓ | lacivert kutu + sarı hap |
 | GPT-6 Luna medium | ✓ | ✗ | – | `&` XML kaçışı yok, SVG açılmıyor |
 | GPT-6 Luna high | ✓ | ✓ | ✓ | sol kenar çizgili kart (yapay zekâ kalıbı) |
+| Qwen3.8 Flash Next (Evren) | ✓ | ✓ | ✓ | **kutusuz**: yazı taş duvarın en sakin bölümünde, okunaklı; kalıba en az benzeyen |
+| DeepSeek v4.1 Flash (Evren) | ✗ (metin tarifi) | ✗ | – | `&` kaçışı yok; kutusuz ama yazı rafların üstünde, alt satır okunmuyor |
+| MiMo v2.6 Pro (Evren) | ✓ | – | – | iki denemede de SVG kodu vermedi, yalnız kararları anlattı |
 
-**Sonuç:** kodla çizilen yazı Türkçe karakterde ve düzenlenebilirlikte görsel modelden açık ara iyi. Ama 5 çıktının 5'i de aynı "kutu + hap düğme" kalıbında. Kalıptan kaçmak için görsel modele kasıtlı boşluk bıraktırmak ve tasarım modeline düzen dağarcığı vermek gerekiyor (sonraki deney).
+Görsel girdi Evren'de ölçüldü: mimo-v2.6-pro, qwen3.8-flash-next, gemma-4-31b, qwen3-vl-30b görüyor; deepseek-v4.1-flash ve glm-5.3 görmüyor. Gemma, qwen3-vl ve glm kararsızlık nedeniyle bu turdan çıkarıldı.
+
+Zor komut setinde ek Evren sonuçları: gemma-4-31b 32/34, qwen3.8-flash-next 30/34; qwen3-vl-30b cevap üretmedi (araç çağırmaya çalıştı).
+
+**Sonuç:** kodla çizilen yazı Türkçe karakterde ve düzenlenebilirlikte görsel modelden açık ara iyi. 8 denemeden 2'si (`&` kaçışı) geçersiz SVG üretti; uygulama SVG'yi çizmeden önce XML doğrulamasından geçirmeli. Görseli görmeyen model yazıyı yanlış yere koyuyor; tasarım modeli mutlaka görsel girdi almalı. Kutu kalıbını yalnız bir model kırdı; dağarcık ve kasıtlı boşlukla ikinci tur yapılacak.
 
 ## Media3 dışa aktarma (Android emülatörü, x86_64, Android 16)
 3 klip (biri yatay) + metin + müzik → 1080×1920, 18,0 sn. Doğrulama `emu-test.ps1`: instrumented testler, ffprobe, frekans bandıyla ses kontrolü (her klibin tonu ve müzik ayrı ayrı duyulmalı). **Yalnızca işlevsel test:** emülatör performans ve kodek kapasitesi hakkında bilgi vermez.

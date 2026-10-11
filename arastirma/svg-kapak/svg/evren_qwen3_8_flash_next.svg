@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920" role="img" aria-labelledby="bt bd">
+
+  <image href="arka.png" x="0" y="0" width="1080" height="1920" preserveAspectRatio="xMidYMid slice"/>
+
+  <title id="bt">Kuzey Fırın — Yeni Sezon Ekmekleri</title>
+  <desc id="bd">Taş duvarlı fırın fotoğrafı üstünde lacivert ve buğday sarısı yazı katmanı.</desc>
+
+  <defs>
+    <style><![CDATA[
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+      text { text-rendering: optimizeLegibility; }
+      .serif  { font-family: 'Fraunces', Georgia, serif; }
+      .sans   { font-family: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif; }
+      .laci   { fill: #1B2A4A; }
+      .bugday { fill: #E8B64C; }
+    ]]></style>
+
+    <filter id="golge" x="-15%" y="-45%" width="130%" height="210%">
+      <feDropShadow dx="0" dy="3" stdDeviation="7" flood-color="#2E2013" flood-opacity="0.30"/>
+    </filter>
+    <filter id="yumusat" x="-30%" y="-60%" width="160%" height="220%">
+      <feGaussianBlur stdDeviation="46"/>
+    </filter>
+  </defs>
+
+  <!-- duvar dokusunu kıran, kenarı olmayan yumuşak açık katman -->
+  <rect x="292" y="252" width="726" height="298" fill="#F7EFE1" opacity="0.20" filter="url(#yumusat)"/>
+
+  <g filter="url(#golge)">
+    <text id="marka" class="sans laci" x="302" y="302" font-size="32" font-weight="600" letter-spacing="5.5" opacity="0.95">Kuzey Fırın</text>
+    <rect x="302" y="340" width="72" height="4" fill="#E8B64C"/>
+    <text id="baslik" class="serif laci" x="300" y="438" font-size="68" font-weight="700" letter-spacing="-0.5">Yeni Sezon Ekmekleri</text>
+    <text id="alt" class="sans laci" x="302" y="498" font-size="30" font-weight="500" opacity="0.95">Ekşi mayalı, her sabah 07.00'de fırından</text>
+  </g>
+
+  <g filter="url(#golge)">
+    <rect x="302" y="930" width="352" height="78" rx="4" fill="#1B2A4A" fill-opacity="0.94"/>
+    <text id="fiyat" class="sans bugday" x="338" y="980" font-size="33" font-weight="600" letter-spacing="0.5">Köy ekmeği 85 ₺</text>
+  </g>
+
+</svg>
