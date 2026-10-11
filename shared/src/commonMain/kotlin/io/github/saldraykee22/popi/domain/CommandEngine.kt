@@ -68,6 +68,8 @@ private fun JsonObject.string(name: String): String = this[name]?.jsonPrimitive?
 private fun JsonObject.long(name: String, default: Long? = null): Long = this[name]?.jsonPrimitive?.longOrNull
     ?: default ?: throw DomainError.InvalidCommand("'$name' tam sayı olmalı")
 private fun JsonObject.float(name: String, default: Float): Float = this[name]?.jsonPrimitive?.floatOrNull ?: default
+/** Alan yoksa ya da JSON null ise null; değilse tam sayı zorunlu. */
+private fun JsonObject.optionalLong(name: String): Long? = this[name]?.takeUnless { it is JsonNull }?.let { long(name) }
 
 private object Reducer {
     fun importClip(project: Project, c: JsonObject, id: String): Project {
@@ -81,6 +83,38 @@ private object Reducer {
         return project.replaceTrack(track.copy(clips = track.clips.toMutableList().apply { add(index, clip) }))
     }
 
+    /**
+     * Klibi aynı iz içinde taşır. Ya `after` (klip kimliği ya da JSON null: başa) ya da `toIndex` verilmelidir.
+     * Alan yokluğu ile JSON null farklıdır: `"after": null` geçerli, alanın hiç olmaması değildir.
+     */
+    fun moveClip(p: Project, c: JsonObject): Project {
+        val hasAfter = c.containsKey("after"); val hasToIndex = c.containsKey("toIndex")
+        if (hasAfter == hasToIndex) throw DomainError.InvalidCommand("move_clip için 'after' ya da 'toIndex' alanlarından tam olarak biri gerekli")
+        val clipId = c.string("clipId")
+        val (track, clip) = p.clip(clipId)
+        val list = track.clips.toMutableList(); list.remove(clip)
+        if (hasToIndex) {
+            val to = c.long("toIndex").toInt()
+            if (to !in track.clips.indices) throw DomainError.InvalidRange("toIndex aralık dışında")
+            list.add(to, clip)
+        } else {
+            val afterElement = c["after"]
+            val position = when {
+                afterElement is JsonNull -> 0
+                afterElement is JsonPrimitive && afterElement.isString -> {
+                    val afterId = afterElement.content
+                    if (afterId == clipId) throw DomainError.InvalidRange("Klip kendisinin arkasına taşınamaz")
+                    val (afterTrack, _) = p.clip(afterId)
+                    if (afterTrack.id != track.id) throw DomainError.InvalidRange("'after' farklı bir izdeki klip")
+                    list.indexOfFirst { it.id == afterId } + 1
+                }
+                else -> throw DomainError.InvalidCommand("'after' klip kimliği ya da null olmalı")
+            }
+            list.add(position, clip)
+        }
+        return p.replaceTrack(track.copy(clips = list))
+    }
+
     fun apply(p: Project, c: JsonObject): Project = when (c.string("op")) {
         "trim_clip" -> {
             val (track, clip) = p.clip(c.string("clipId")); val asset = p.assets.firstOrNull { it.id == clip.assetId } ?: throw DomainError.NotFound("asset", clip.assetId)
@@ -88,17 +122,17 @@ private object Reducer {
             if (start < 0 || start >= end || end > asset.durationMs) throw DomainError.InvalidRange("Trim 0 <= inMs < outMs <= asset.durationMs olmalı")
             p.replaceTrack(track.copy(clips = track.clips.map { if (it.id == clip.id) clip.copy(inMs = start, outMs = end) else it }))
         }
-        "move_clip" -> {
-            val (track, clip) = p.clip(c.string("clipId")); val to = c.long("toIndex").toInt()
-            if (to !in track.clips.indices) throw DomainError.InvalidRange("toIndex aralık dışında")
-            val list = track.clips.toMutableList(); list.remove(clip); list.add(to, clip); p.replaceTrack(track.copy(clips = list))
-        }
+        "move_clip" -> moveClip(p, c)
         "delete_clip" -> { val (track, clip) = p.clip(c.string("clipId")); p.replaceTrack(track.copy(clips = track.clips.filterNot { it.id == clip.id })) }
         "add_text" -> {
             val id = c.string("trackId"); val track = p.tracks.firstOrNull { it.id == id && it.kind == "text" } ?: throw DomainError.NotFound("text track", id)
             val start = c.long("startMs"); val duration = c.long("durationMs"); if (start < 0 || duration <= 0) throw DomainError.InvalidRange("Metin aralığı geçersiz")
             val style = c["style"]?.let { Json.decodeFromJsonElement<TextStyle>(it) } ?: TextStyle()
             p.replaceTrack(track.copy(items = track.items + TextItem(c["id"]?.jsonPrimitive?.content ?: "x${track.items.size + 1}", c.string("text"), start, duration, style)))
+        }
+        "delete_text" -> {
+            val id = c.string("itemId"); val track = p.tracks.firstOrNull { it.kind == "text" && it.items.any { item -> item.id == id } } ?: throw DomainError.NotFound("text item", id)
+            p.replaceTrack(track.copy(items = track.items.filterNot { it.id == id }))
         }
         "edit_text" -> {
             val id = c.string("itemId"); val track = p.tracks.firstOrNull { it.kind == "text" && it.items.any { item -> item.id == id } } ?: throw DomainError.NotFound("text item", id)
@@ -113,12 +147,21 @@ private object Reducer {
             if (asset.kind != "audio") throw DomainError.InvalidRange("add_audio audio asset ister")
             val id = c.string("trackId"); val track = p.tracks.firstOrNull { it.id == id && it.kind == "audio" } ?: throw DomainError.NotFound("audio track", id)
             val start = c.long("inMs", 0); val end = c.long("outMs", asset.durationMs); val volume = c.float("volume", 1f)
-            if (start < 0 || start >= end || end > asset.durationMs || volume !in 0f..2f) throw DomainError.InvalidRange("Ses aralığı/hacmi geçersiz")
-            p.replaceTrack(track.copy(clips = track.clips + Clip(c["id"]?.jsonPrimitive?.content ?: "a${track.clips.size + 1}", assetId, start, end, volume)))
+            val timelineStart = c.optionalLong("startMs")
+            if (start < 0 || start >= end || end > asset.durationMs || volume !in 0f..2f || (timelineStart != null && timelineStart < 0)) throw DomainError.InvalidRange("Ses aralığı/hacmi/başlangıcı geçersiz")
+            p.replaceTrack(track.copy(clips = track.clips + Clip(c["id"]?.jsonPrimitive?.content ?: "a${track.clips.size + 1}", assetId, start, end, volume, timelineStart)))
+        }
+        "set_audio_start" -> {
+            val (track, clip) = p.clip(c.string("clipId"))
+            if (track.kind != "audio") throw DomainError.InvalidRange("set_audio_start yalnız ses izindeki klip için")
+            val start = c.long("startMs")
+            if (start < 0) throw DomainError.InvalidRange("Ses başlangıcı negatif olamaz")
+            p.replaceTrack(track.copy(clips = track.clips.map { if (it.id == clip.id) it.copy(startMs = start) else it }))
         }
         "set_volume" -> {
+            // Video ve ses izindeki kliplerde çalışır; metin öğeleri klip değildir, NotFound verir.
             val (track, clip) = p.clip(c.string("clipId")); val volume = c.float("volume", Float.NaN)
-            if (track.kind != "audio" || volume !in 0f..2f) throw DomainError.InvalidRange("Ses seviyesi 0.0–2.0 olmalı")
+            if (volume !in 0f..2f) throw DomainError.InvalidRange("Ses seviyesi 0.0–2.0 olmalı")
             p.replaceTrack(track.copy(clips = track.clips.map { if (it.id == clip.id) it.copy(volume = volume) else it }))
         }
         "export_project" -> throw DomainError.Unsupported("export_project uygulama adaptöründe çalıştırılır")
