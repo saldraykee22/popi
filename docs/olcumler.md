@@ -12,12 +12,14 @@ Test seti, puanlayıcı ve başlangıç durumları `arastirma/komut-testi/` klas
 | DeepSeek v4.1 Flash | 40/40 |
 | Gemini 3.8 Flash | 40/40 |
 | GPT-6 Luna | 40/40 |
+| MiMo v2.6 Pro (Evren) | 40/40 |
 
 **Zor set (34 istek).** İstemde kural yok. Konuşma dili, ses tanıma yazım hataları ("iki nci klibi üç saniye kıssalt"), zamir ve geçmişe atıf ("az önce kestiğim klibi geri getir"), şemanın yapamadığı istekler. Puanlama tek bir altın cevaba değil, son durumu sınayan koşullara bakar; farklı ama doğru çözümler de geçer.
 | Model | Doğru | Hatalar |
 |---|---|---|
 | Claude Haiku 5.5 | 33/34 | Z12: hangi klibin kısaltılacağını sordu (savunulabilir) |
 | Gemini 3.8 Flash | 33/34 | Z12: aynı |
+| MiMo v2.6 Pro (Evren) | 33/34 | Z12: aynı |
 | DeepSeek v4.1 Flash | 32/34 | Z12; müziği dosya süresinin ötesine uzatmaya çalıştı (motor reddeder) |
 | GPT-6 Luna (medium) | 28/34 | `move_clip` sırasında iki kez bir kayma; giriş noktası ile zaman çizelgesi konumunu karıştırdı; müziği uzatmaya çalıştı |
 
@@ -31,6 +33,27 @@ Test seti, puanlayıcı ve başlangıç durumları `arastirma/komut-testi/` klas
 - **Süre:** görsel başına ortalama ~34 sn.
 - **Karar:** arka planı model üretir, yazıyı uygulama katman olarak ekler (`icerik-ilkeleri.md`).
 
+## Yerel Türkçe ses tanıma → komut (uçtan uca)
+Düzenleme komutu niteliğinde 20 cümle; iki sentetik ses (edge-tts Ahmet ve Emel), temiz ve ~15 dB gürültülü. Toplam 80 kayıt. Her motorun dökümü Claude Haiku 5.5 ile komuta çevrildi; son durum koşullarla puanlandı. Masaüstü CPU: Ryzen 5 5600.
+
+| Motor | Boyut | Tepe RAM | RTF (masaüstü) | Kelime hata oranı | **Doğru komut** | Soru sordu / motor reddi | **Yanlış işlem** |
+|---|---|---|---|---|---|---|---|
+| whisper-large-v3-turbo q5 | 547 MB | 742 MB | 5.2 | %18.6 | 80/80 | 0 / 0 | 0 |
+| whisper-small | 465 MB | 772 MB | 1.15 | %27.9 | 75/80 | 1 / 4 | 0 |
+| whisper-base | 141 MB | 306 MB | 0.24 | %44.5 | 72/80 | 4 / 4 | 0 |
+| whisper-tiny | 74 MB | 197 MB | 0.15 | %56.0 | 72/80 | 2 / 2 | 4 |
+| vosk-small-tr | 56 MB | ~5 MB | 0.19 | %41.3 | 66/80 | 6 / 4 | 4 |
+| *(hatasız metin)* | | | | %0 | 19/20 | | |
+
+**Sonuçlar:**
+- **Kelime hata oranı yanıltıcı.** "2. klibi 2 saniye kısalt" gibi doğru dökümler hata sayılıyor. Dil modeli bozuk dökümün büyük kısmını onarıyor.
+- **Güvenli hata ile tehlikeli hata ayrı ölçülmeli.** Fiil düşünce model soru soruyor ya da motor geçersiz komutu reddediyor; bunlar kullanıcıya zarar vermez. Tehlikeli olan yanlış işlem: whisper-base ve üstünde sıfır.
+- **Telefon için aday whisper-base** (141 MB; telefon işlemcisinde gerçek zamana yakın olacağı tahmin ediliyor, ölçülmedi). Güçlü cihazlarda whisper-small isteğe bağlı indirilebilir.
+- **Android'in yerleşik çevrimdışı Türkçe tanıması güvenilir değil.** Bu, ölçüm değil kaynak taramasından çıkan bir sonuç; gerçek cihazda sınanacak.
+
+**Sınırlar:** Sesler sentetik. Gerçek insan sesi (hızlı konuşma, yutulan heceler, ortam gürültüsü) sonuçları kötüleştirecek. Sıradaki ölçüm gerçek ses kayıtlarıyla yapılacak.
+
 ## Bekleyen ölçümler
-- Yerel Türkçe ses tanıma (whisper.cpp, Vosk): kelime hata oranı, gecikme, bellek.
+- Gerçek insan sesiyle aynı uçtan uca test.
+- Telefon işlemcisinde whisper-base gecikmesi (gerçek cihaz).
 - Media3 ile uçtan uca dışa aktarma (emülatör, ardından gerçek cihaz).

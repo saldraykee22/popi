@@ -1,0 +1,21 @@
+{"n": 1, "kontrol": "dur('c2') == 4000 and sira() == ORJ_SIRA"}
+{"n": 2, "kontrol": "klip('c1')['inMs'] == 1500 and klip('c1')['outMs'] == 8000 and sira() == ORJ_SIRA"}
+{"n": 3, "kontrol": "sira() == ['c3','c1','c2']"}
+{"n": 4, "kontrol": "0 < vol('c4') < 1.0"}
+{"n": 5, "kontrol": "vol('c4') == 0.3"}
+{"n": 6, "kontrol": "sira() == ['c1','c3']"}
+{"n": 7, "kabul": ["clarify"], "kontrol": "any(x['text'].lower().strip('\"') == 'yeni sezon' and x['startMs'] == 0 for x in yeni_metinler())"}
+{"n": 8, "kontrol": "txt('x1')['durationMs'] == 3000 and txt('x1')['startMs'] == 0 and sira() == ORJ_SIRA"}
+{"n": 9, "kontrol": "txt('x1')['style']['position'] == 'bottom'"}
+{"n": 10, "kabul": ["clarify"], "undo_kabul": true, "kontrol": null}
+{"n": 11, "kontrol": "sira() == ['c1','c3','c2']"}
+{"n": 12, "kabul": ["clarify", "unsupported"], "kontrol": null}
+{"n": 13, "kabul": ["clarify", "unsupported"], "kontrol": "klip('c4')['inMs'] == 0 and vol('c4') == 1.0 and sira() == ORJ_SIRA"}
+{"n": 14, "kabul": ["clarify", "unsupported"], "kontrol": null}
+{"n": 15, "kontrol": "sari(txt('x1')['style']['color'])"}
+{"n": 16, "kontrol": "toplam() == 20000"}
+{"n": 17, "kontrol": "klip('c2')['inMs'] == 0 and klip('c2')['outMs'] == 4000 and sira() == ORJ_SIRA"}
+{"n": 18, "kabul": ["clarify", "unsupported"], "kontrol": null}
+{"n": 19, "export_bekle": true, "kontrol": "sira() == ORJ_SIRA"}
+{"n": 20, "kabul": ["clarify"], "undo_kabul": true, "kontrol": null}
+

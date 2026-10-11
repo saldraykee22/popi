@@ -1,0 +1,20 @@
+İkinci klibi iki saniye kısalt.
+İlk klibin başından bir buçuk saniye kes.
+Son klibi en başa taşı.
+Müziğin sesini biraz kıs.
+Müziği yüzde otuza indir.
+Ortadaki videoyu sil.
+Başa beyaz renkle "Yeni Sezon" yazısı ekle.
+Yazıyı üç saniye ekranda tut.
+Başlığı ekranın altına al.
+Son yaptığımı geri al.
+Üçüncü klibi ikinciyle yer değiştir.
+Videonun sonuna logoyu ekle.
+Müziği videonun başından başlat.
+Klibin sesini tamamen kapat.
+Yazının rengini sarı yap.
+Toplam süreyi yirmi saniyeye düşür.
+İkinci klibin son iki saniyesini at.
+Arka plan müziğini değiştir.
+Videoyu dikey olarak dışa aktar.
+Az önce sildiğim klibi geri getir.

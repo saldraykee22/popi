@@ -1,0 +1,2052 @@
+{
+ "vosk-small-tr": {
+  "clean_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "i̇kinci kıl ve iki saniye kısa kısaltma",
+    "wer": 0.8
+   },
+   {
+    "idx": 2,
+    "hyp": "i̇lk binbaşı ndan bir buçuk saniye kes",
+    "wer": 0.2857142857142857
+   },
+   {
+    "idx": 3,
+    "hyp": "son pili bir en başa taşı",
+    "wer": 0.4
+   },
+   {
+    "idx": 4,
+    "hyp": "müzik sesini biraz kız",
+    "wer": 0.5
+   },
+   {
+    "idx": 5,
+    "hyp": "müziği yüzde otuzu indir",
+    "wer": 0.25
+   },
+   {
+    "idx": 6,
+    "hyp": "ortadaki video iyisi",
+    "wer": 0.6666666666666666
+   },
+   {
+    "idx": 7,
+    "hyp": "paşa beyaz renkli yeni sezon yazısı etti",
+    "wer": 0.42857142857142855
+   },
+   {
+    "idx": 8,
+    "hyp": "yazıyı üç saniye ekranda tut",
+    "wer": 0.0
+   },
+   {
+    "idx": 9,
+    "hyp": "başlığı ekranın altına alevi",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "son yaptığımı geri alevi",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "üçüncü pili ve ikinci ile yer değiştir",
+    "wer": 0.8
+   },
+   {
+    "idx": 12,
+    "hyp": "video nın sonuna logo yetti",
+    "wer": 1.0
+   },
+   {
+    "idx": 13,
+    "hyp": "müziği video nın başından başlat",
+    "wer": 0.5
+   },
+   {
+    "idx": 14,
+    "hyp": "filipin sesini tamamen kapat",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "yazının rengini sarıya",
+    "wer": 0.5
+   },
+   {
+    "idx": 16,
+    "hyp": "toplam süreyi yirmi saniye düşüyor",
+    "wer": 0.4
+   },
+   {
+    "idx": 17,
+    "hyp": "i̇kinci kilidi son iki saniye seat",
+    "wer": 0.5
+   },
+   {
+    "idx": 18,
+    "hyp": "arka plan müziği değiştir",
+    "wer": 0.25
+   },
+   {
+    "idx": 19,
+    "hyp": "videoyu dikey olarak dışa aktar",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "az önce sildim klibi geri getir",
+    "wer": 0.16666666666666666
+   }
+  ],
+  "clean_emel": [
+   {
+    "idx": 1,
+    "hyp": "i̇kinci ile iki saniye kısa altı",
+    "wer": 0.6
+   },
+   {
+    "idx": 2,
+    "hyp": "i̇lk filmin başından bir buçuk saniye kes",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 3,
+    "hyp": "sanki bir en başa taşı",
+    "wer": 0.4
+   },
+   {
+    "idx": 4,
+    "hyp": "müzik sesini biraz kız",
+    "wer": 0.5
+   },
+   {
+    "idx": 5,
+    "hyp": "müziği yüzde otuzu indir",
+    "wer": 0.25
+   },
+   {
+    "idx": 6,
+    "hyp": "ortadaki video iyisi",
+    "wer": 0.6666666666666666
+   },
+   {
+    "idx": 7,
+    "hyp": "başa beyaz renkli yeni sezon yazısı ekle",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 8,
+    "hyp": "yazıyı üç saniye ekranda tut",
+    "wer": 0.0
+   },
+   {
+    "idx": 9,
+    "hyp": "başlığı ekranın altına alevi",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "son yaptığımı geri alevi",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "üçüncü klibi ikinci ile yer değiştir",
+    "wer": 0.4
+   },
+   {
+    "idx": 12,
+    "hyp": "video nun sonunda logo ekle",
+    "wer": 1.0
+   },
+   {
+    "idx": 13,
+    "hyp": "müziği video onun başından başlat",
+    "wer": 0.5
+   },
+   {
+    "idx": 14,
+    "hyp": "filipin sesini tamamen kapat",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "yazının rengini sarıya",
+    "wer": 0.5
+   },
+   {
+    "idx": 16,
+    "hyp": "toplam süreyi yirmi saniye düşür",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "i̇kinci beyin son iki saniye seni at",
+    "wer": 0.5
+   },
+   {
+    "idx": 18,
+    "hyp": "arka plan müziği değiştir",
+    "wer": 0.25
+   },
+   {
+    "idx": 19,
+    "hyp": "videoyu dikey olarak dışa aktar",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "az önce sevdiğim klibi geri getir",
+    "wer": 0.16666666666666666
+   }
+  ],
+  "noisy_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "i̇kinci klibi iki saniye kısa",
+    "wer": 0.2
+   },
+   {
+    "idx": 2,
+    "hyp": "i̇çkili binbaşı başından bir buçuk saniye kes",
+    "wer": 0.2857142857142857
+   },
+   {
+    "idx": 3,
+    "hyp": "son filmi en başa taşı",
+    "wer": 0.2
+   },
+   {
+    "idx": 4,
+    "hyp": "yüzeyin sesini biraz kız",
+    "wer": 0.5
+   },
+   {
+    "idx": 5,
+    "hyp": "bizi yüzde altı zengindir",
+    "wer": 0.75
+   },
+   {
+    "idx": 6,
+    "hyp": "ortadaki video iyisin",
+    "wer": 0.6666666666666666
+   },
+   {
+    "idx": 7,
+    "hyp": "paşa beyaz renk ve yeni sezon yazısı etti",
+    "wer": 0.5714285714285714
+   },
+   {
+    "idx": 8,
+    "hyp": "gezi üç saniye ekranda tüm",
+    "wer": 0.4
+   },
+   {
+    "idx": 9,
+    "hyp": "başlığı ekranın altına alevi",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "son yaptığımı geri alevi",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "üçüncü fiili ve ikinci ile yer değiştir",
+    "wer": 0.8
+   },
+   {
+    "idx": 12,
+    "hyp": "video nın sonuna logo yetti",
+    "wer": 1.0
+   },
+   {
+    "idx": 13,
+    "hyp": "müziği video nın başından başla",
+    "wer": 0.75
+   },
+   {
+    "idx": 14,
+    "hyp": "filipin sesini tamamen kapat",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "yazının rengini sarıya",
+    "wer": 0.5
+   },
+   {
+    "idx": 16,
+    "hyp": "toplam süreyi yirmi saniye dişi",
+    "wer": 0.4
+   },
+   {
+    "idx": 17,
+    "hyp": "i̇kinci filipin son iki saniye sina",
+    "wer": 0.5
+   },
+   {
+    "idx": 18,
+    "hyp": "arka plan müziği değiştir",
+    "wer": 0.25
+   },
+   {
+    "idx": 19,
+    "hyp": "videoyu dikey olarak dışa saatler",
+    "wer": 0.2
+   },
+   {
+    "idx": 20,
+    "hyp": "az önce sevdiğim klibi geri getir",
+    "wer": 0.16666666666666666
+   }
+  ],
+  "noisy_emel": [
+   {
+    "idx": 1,
+    "hyp": "i̇kinci kilidi iki saniye kutsal",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "i̇lk filmin başından bir buçuk saniye kes",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 3,
+    "hyp": "en başa taşı",
+    "wer": 0.4
+   },
+   {
+    "idx": 4,
+    "hyp": "dizin sesini biraz kız",
+    "wer": 0.5
+   },
+   {
+    "idx": 5,
+    "hyp": "bizi yüzde otuzu indir",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "sıradaki video",
+    "wer": 1.0
+   },
+   {
+    "idx": 7,
+    "hyp": "başa beyaz renkli yeni sezon yazısı ekle",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 8,
+    "hyp": "yazıyı üç saniye ekranda tut",
+    "wer": 0.0
+   },
+   {
+    "idx": 9,
+    "hyp": "başlığı ekranın altında ve",
+    "wer": 0.5
+   },
+   {
+    "idx": 10,
+    "hyp": "son yaptığımı geri aile ve",
+    "wer": 0.5
+   },
+   {
+    "idx": 11,
+    "hyp": "i̇kinci ile yer değiştir",
+    "wer": 0.6
+   },
+   {
+    "idx": 12,
+    "hyp": "video nun sonunda logo ekle",
+    "wer": 1.0
+   },
+   {
+    "idx": 13,
+    "hyp": "bizi video nın başından başla",
+    "wer": 1.0
+   },
+   {
+    "idx": 14,
+    "hyp": "sesini tamamen kapat",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "yazının rengini sarıya",
+    "wer": 0.5
+   },
+   {
+    "idx": 16,
+    "hyp": "toplam süreyi yirmi saniye düşün",
+    "wer": 0.4
+   },
+   {
+    "idx": 17,
+    "hyp": "i̇kinci filipin son iki saniye sanat",
+    "wer": 0.5
+   },
+   {
+    "idx": 18,
+    "hyp": "arka plan bize yeni değiştir",
+    "wer": 0.5
+   },
+   {
+    "idx": 19,
+    "hyp": "videoyu dikey olarak dışa aktar",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "az önce sevdiğim klibi geri getir",
+    "wer": 0.16666666666666666
+   }
+  ]
+ },
+ "whisper-tiny": {
+  "clean_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kirli bir iki saniye kısaat.",
+    "wer": 0.6
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk kilibin başından bir buçuk saniye kes.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kili bir en başa taşı.",
+    "wer": 0.4
+   },
+   {
+    "idx": 4,
+    "hyp": "Müsin sesini bir azkız.",
+    "wer": 0.75
+   },
+   {
+    "idx": 5,
+    "hyp": "Bu yüzden bu videoda daha iyi.",
+    "wer": 1.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Orta da ki video isi.",
+    "wer": 1.6666666666666667
+   },
+   {
+    "idx": 7,
+    "hyp": "Aşağı beyaz renkte yeni sezon yazısek de.",
+    "wer": 0.5714285714285714
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı üç saniye ekranda tut.",
+    "wer": 0.0
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına alebe.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri al eve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üçüncü kili bir ikinciyle yer değiştir.",
+    "wer": 0.4
+   },
+   {
+    "idx": 12,
+    "hyp": "videonun sonu alakoyette",
+    "wer": 0.75
+   },
+   {
+    "idx": 13,
+    "hyp": "Müziyi videonun başından başlat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 14,
+    "hyp": "Hilebin sesini tamamen kapat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının dengini sarı yap.",
+    "wer": 0.25
+   },
+   {
+    "idx": 16,
+    "hyp": "Hoplam süreyi girme saniye edişir.",
+    "wer": 0.8
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kirli bin son iki saniyesin ad.",
+    "wer": 0.6666666666666666
+   },
+   {
+    "idx": 18,
+    "hyp": "Aka plan müzini değiştir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikiye olarak dışa aktar.",
+    "wer": 0.2
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğin külü bir geri getir.",
+    "wer": 0.5
+   }
+  ],
+  "clean_emel": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kili bir iki saniye kısalt.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk bile bir başından bir buçuk saniye kes.",
+    "wer": 0.2857142857142857
+   },
+   {
+    "idx": 3,
+    "hyp": "Sormkili bir en başa taşı.",
+    "wer": 0.4
+   },
+   {
+    "idx": 4,
+    "hyp": "Müziyin sesini bir askız.",
+    "wer": 0.75
+   },
+   {
+    "idx": 5,
+    "hyp": "Müzik yüzde otaza indir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Orta da ki videoyu si.",
+    "wer": 1.3333333333333333
+   },
+   {
+    "idx": 7,
+    "hyp": "Başa beyaz renke, yeni sezon yazı seyekle.",
+    "wer": 0.42857142857142855
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı üç saniye ekranda tut.",
+    "wer": 0.0
+   },
+   {
+    "idx": 9,
+    "hyp": "Başını ekrenin altına alevi.",
+    "wer": 0.75
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aileve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üç önce kile bir ikinci ile yer değiştir.",
+    "wer": 1.2
+   },
+   {
+    "idx": 12,
+    "hyp": "videonun sonuna leboye ekleye",
+    "wer": 0.5
+   },
+   {
+    "idx": 13,
+    "hyp": "Müziyi videonun başından başlat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 14,
+    "hyp": "Yibin sesini tamamen kapat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazımın rengini sarı yap.",
+    "wer": 0.25
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi yirmi saniye edişir.",
+    "wer": 0.4
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kribin son iki saniyesin at.",
+    "wer": 0.3333333333333333
+   },
+   {
+    "idx": 18,
+    "hyp": "Arkap ile on müziğini değiştir.",
+    "wer": 0.75
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikeye olarak dışı aktar.",
+    "wer": 0.4
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildeyim kirli bir geri getir.",
+    "wer": 0.5
+   }
+  ],
+  "noisy_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "İkincik ile bir iki saniye kısa.",
+    "wer": 0.8
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk kilibin başından bir buçuk saniye kes.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 3,
+    "hyp": "Son killi bir en başa taşı.",
+    "wer": 0.4
+   },
+   {
+    "idx": 4,
+    "hyp": "Müsin sesini bir azkız.",
+    "wer": 0.75
+   },
+   {
+    "idx": 5,
+    "hyp": "Bu yüzden bu bir şey var.",
+    "wer": 1.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Orta da ki video isi.",
+    "wer": 1.6666666666666667
+   },
+   {
+    "idx": 7,
+    "hyp": "Aşağı beyaz rente geni sezon yazı seyette.",
+    "wer": 0.7142857142857143
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı üç saniye eklandatur.",
+    "wer": 0.4
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekremin altını araydı.",
+    "wer": 0.75
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri al eve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üçüncü kili bir ikinci ile yer değiştir.",
+    "wer": 0.8
+   },
+   {
+    "idx": 12,
+    "hyp": "videonun sonu alakoyetler",
+    "wer": 0.75
+   },
+   {
+    "idx": 13,
+    "hyp": "Vüziği videonun başından başlar.",
+    "wer": 0.5
+   },
+   {
+    "idx": 14,
+    "hyp": "gibi bir sesini tamamen kapat.",
+    "wer": 0.5
+   },
+   {
+    "idx": 15,
+    "hyp": "gezinin dengini sarıya.",
+    "wer": 1.0
+   },
+   {
+    "idx": 16,
+    "hyp": "toplam süreyi girmiş saniye edişiyor.",
+    "wer": 0.6
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kirli bin son iki saniyesinat.",
+    "wer": 0.6666666666666666
+   },
+   {
+    "idx": 18,
+    "hyp": "Arkapiler müziğini değiştir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikeye olarak dışaklar.",
+    "wer": 0.6
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğin külü bir geri getir.",
+    "wer": 0.5
+   }
+  ],
+  "noisy_emel": [
+   {
+    "idx": 1,
+    "hyp": "İkincik ile bir iki saniye kısalt.",
+    "wer": 0.6
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk telebin başından bir buçuk saniye kes.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 3,
+    "hyp": "Sanki ile bir en başa taşı.",
+    "wer": 0.6
+   },
+   {
+    "idx": 4,
+    "hyp": "Buzincisi ne biraz kız.",
+    "wer": 0.75
+   },
+   {
+    "idx": 5,
+    "hyp": "Müzik yüzde otaza indir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Orta da ki videoyu siz.",
+    "wer": 1.3333333333333333
+   },
+   {
+    "idx": 7,
+    "hyp": "Basha beyaz renkli, yeni sezon piyazı seykli.",
+    "wer": 0.5714285714285714
+   },
+   {
+    "idx": 8,
+    "hyp": "yazıyı üç saniye ekranda tut.",
+    "wer": 0.0
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlı ekranın altına alevi.",
+    "wer": 0.5
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aleve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üç önce kili bir ikinci ile yer değiştir.",
+    "wer": 1.2
+   },
+   {
+    "idx": 12,
+    "hyp": "videonun sonuna logoya ekleye",
+    "wer": 0.5
+   },
+   {
+    "idx": 13,
+    "hyp": "Müzik videonun başından başlar.",
+    "wer": 0.5
+   },
+   {
+    "idx": 14,
+    "hyp": "İlbin sesini tamamen kapat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "yazımın rengine sarı yap.",
+    "wer": 0.5
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi yirmi saniye edişim.",
+    "wer": 0.4
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kilebilin son iki saniyesini at.",
+    "wer": 0.16666666666666666
+   },
+   {
+    "idx": 18,
+    "hyp": "Arkap ilan müziğini değiştir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikeye olarak da şaktaş.",
+    "wer": 0.6
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğin kili bir geri getir.",
+    "wer": 0.5
+   }
+  ]
+ },
+ "whisper-base": {
+  "clean_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kili bir iki saniye kısalt.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk kili bin başından 1,5 saniye kes.",
+    "wer": 0.5714285714285714
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kilibi en başa taşı.",
+    "wer": 0.2
+   },
+   {
+    "idx": 4,
+    "hyp": "Müzín sesini bir askız.",
+    "wer": 0.75
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziği %30'a indir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Orta'daki video isi.",
+    "wer": 1.3333333333333333
+   },
+   {
+    "idx": 7,
+    "hyp": "Aşağı beyaz renkte yeni sezon yazı sekte.",
+    "wer": 0.5714285714285714
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına alevi.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aleve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üçüncü kili bir ikinciyle yer değiştir.",
+    "wer": 0.4
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna logoyakta.",
+    "wer": 0.5
+   },
+   {
+    "idx": 13,
+    "hyp": "Müzik videonun başından başlat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 14,
+    "hyp": "Hilibin sesini tamamen kapat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının dengini sarı yap.",
+    "wer": 0.25
+   },
+   {
+    "idx": 16,
+    "hyp": "Hoplam süreyi 20 saniyeye düşür.",
+    "wer": 0.4
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kilibin son iki saniyesi nat.",
+    "wer": 0.5
+   },
+   {
+    "idx": 18,
+    "hyp": "Akıp ilam müzini değiştir.",
+    "wer": 0.75
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışı aktar.",
+    "wer": 0.2
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim kili bir geri getir.",
+    "wer": 0.3333333333333333
+   }
+  ],
+  "clean_emel": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kili bir iki saniye kısalt.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk kili bin başından bir buçuk saniye kes.",
+    "wer": 0.2857142857142857
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kilibi en başa taşı.",
+    "wer": 0.2
+   },
+   {
+    "idx": 4,
+    "hyp": "Müziğin sesini bir askız.",
+    "wer": 0.5
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziyi yüzde otuz ayındır.",
+    "wer": 0.75
+   },
+   {
+    "idx": 6,
+    "hyp": "Otadaki videoyu siz.",
+    "wer": 0.6666666666666666
+   },
+   {
+    "idx": 7,
+    "hyp": "Başa beyaz renkli yeni sezon yazısı ekle.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına alevi.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri alevi.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "3. kili bir ikinci ile yer değiştir.",
+    "wer": 1.0
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna logoya ekleyin.",
+    "wer": 0.5
+   },
+   {
+    "idx": 13,
+    "hyp": "Müzik video'nun başından başlat.",
+    "wer": 0.75
+   },
+   {
+    "idx": 14,
+    "hyp": "Yıl Bin sesini tamamen kapat.",
+    "wer": 0.5
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının rengini sarı yap.",
+    "wer": 0.0
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniyeye düşür.",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kili bin son iki saniyesini at.",
+    "wer": 0.3333333333333333
+   },
+   {
+    "idx": 18,
+    "hyp": "Arka plan müzeğini değiştir.",
+    "wer": 0.25
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu diki olarak dışı aktar.",
+    "wer": 0.4
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim kili bir geri getir.",
+    "wer": 0.3333333333333333
+   }
+  ],
+  "noisy_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kili bir iki saniye kısal.",
+    "wer": 0.6
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk kilibin başından 1,5 saniye kes.",
+    "wer": 0.42857142857142855
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kilibi en başa taşı.",
+    "wer": 0.2
+   },
+   {
+    "idx": 4,
+    "hyp": "Müzik sesini bir askız.",
+    "wer": 0.75
+   },
+   {
+    "idx": 5,
+    "hyp": "Yüzü yüzde otuz endir.",
+    "wer": 0.75
+   },
+   {
+    "idx": 6,
+    "hyp": "Orta'daki videoyu izleyin.",
+    "wer": 1.0
+   },
+   {
+    "idx": 7,
+    "hyp": "Aşağı beyaz renkte yeni sezon yazı sekte.",
+    "wer": 0.5714285714285714
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına aileye be.",
+    "wer": 0.5
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aleve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üçüncü klibi ikinciyle yer değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna loguye gitti.",
+    "wer": 0.5
+   },
+   {
+    "idx": 13,
+    "hyp": "Müzik video'nun başından başlar.",
+    "wer": 1.0
+   },
+   {
+    "idx": 14,
+    "hyp": "Gili bin sesini tamamen kapat.",
+    "wer": 0.5
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının dengini sarıya.",
+    "wer": 0.75
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniyeye düşür.",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kilibin son iki saniyesine.",
+    "wer": 0.5
+   },
+   {
+    "idx": 18,
+    "hyp": "Akıp ilam müzini değiştir.",
+    "wer": 0.75
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışa aktar.",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim kili bir geri getir.",
+    "wer": 0.3333333333333333
+   }
+  ],
+  "noisy_emel": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kilibi iki saniye kısaltı.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk pilibin başından bir buçuk saniye kes.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kilibi en başa taşı.",
+    "wer": 0.2
+   },
+   {
+    "idx": 4,
+    "hyp": "Müziğin sesini biraz kız.",
+    "wer": 0.25
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziyi yüzde otuz ayındır.",
+    "wer": 0.75
+   },
+   {
+    "idx": 6,
+    "hyp": "Otur da ki videoyu size.",
+    "wer": 1.3333333333333333
+   },
+   {
+    "idx": 7,
+    "hyp": "Başa beyaz renkli yeni sezon ki yazı sayıklı.",
+    "wer": 0.5714285714285714
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına alevi.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri alevi.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Bütüncü kili bir ikinciyle yer değiştir.",
+    "wer": 0.6
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna logoya ekleyelim.",
+    "wer": 0.5
+   },
+   {
+    "idx": 13,
+    "hyp": "Müzik video'nun başından başlattı.",
+    "wer": 1.0
+   },
+   {
+    "idx": 14,
+    "hyp": "İli bin sesini tamamen kapat.",
+    "wer": 0.5
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının rengini sarı yap.",
+    "wer": 0.0
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniye edişir.",
+    "wer": 0.6
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kili bin son iki saniyesini at.",
+    "wer": 0.3333333333333333
+   },
+   {
+    "idx": 18,
+    "hyp": "Arka plan müzeğini değiştir.",
+    "wer": 0.25
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu diki olarak düşecek.",
+    "wer": 0.6
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim kili bir geri getir.",
+    "wer": 0.3333333333333333
+   }
+  ]
+ },
+ "whisper-small": {
+  "clean_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "2. klibi 2 saniye kısalt.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk klibin başından 1,5 saniye kes.",
+    "wer": 0.2857142857142857
+   },
+   {
+    "idx": 3,
+    "hyp": "Son klibi en başa taşı.",
+    "wer": 0.0
+   },
+   {
+    "idx": 4,
+    "hyp": "Müzin sesini biraz kız.",
+    "wer": 0.5
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziği %30'e indir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Ortadaki video isil.",
+    "wer": 0.6666666666666666
+   },
+   {
+    "idx": 7,
+    "hyp": "Aşağı beyaz renkte yeni sezon yazısı ekle.",
+    "wer": 0.2857142857142857
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına al eve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri al eve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üçüncü klibi ikinciyle yer değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna logoyu ekle.",
+    "wer": 0.0
+   },
+   {
+    "idx": 13,
+    "hyp": "Müzik videonun başından başlat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 14,
+    "hyp": "Hilibin sesini tamamen kapat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının dengini sarı yap.",
+    "wer": 0.25
+   },
+   {
+    "idx": 16,
+    "hyp": "Hoplam süreyi 20 saniyeye düşür.",
+    "wer": 0.4
+   },
+   {
+    "idx": 17,
+    "hyp": "2. klibin son 2 saniyesini at.",
+    "wer": 0.3333333333333333
+   },
+   {
+    "idx": 18,
+    "hyp": "AK plan müzini değiştir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışarı aktar.",
+    "wer": 0.2
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim klibi geri getir.",
+    "wer": 0.0
+   }
+  ],
+  "clean_emel": [
+   {
+    "idx": 1,
+    "hyp": "İkinci klibi 2 saniye kısalt.",
+    "wer": 0.2
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk klibin başından bir buçuk saniye kes.",
+    "wer": 0.0
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kili bir en başa taşı.",
+    "wer": 0.4
+   },
+   {
+    "idx": 4,
+    "hyp": "MÜZİĞİN SESİNE BİRAS KİZ",
+    "wer": 0.75
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziği %30'a indir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Ortadaki videoyu sil.",
+    "wer": 0.0
+   },
+   {
+    "idx": 7,
+    "hyp": "Başa beyaz renkli yeni sezon yazısı ekle.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına alevi.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri alevi.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "3. klibi ikinci ile yer değiştir.",
+    "wer": 0.6
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna Loboy'a ekle.",
+    "wer": 0.5
+   },
+   {
+    "idx": 13,
+    "hyp": "Müzik videonun başından başlat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 14,
+    "hyp": "İlbin sesini tamamen kapat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının rengini sarı yap.",
+    "wer": 0.0
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniyeye düşür.",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci klibin son iki saniyesine at.",
+    "wer": 0.16666666666666666
+   },
+   {
+    "idx": 18,
+    "hyp": "Arka plan müziğini değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışa aktar.",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim klibi geri getir.",
+    "wer": 0.0
+   }
+  ],
+  "noisy_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kelibi iki saniye kısal.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk kilibin başından 1,5 saniye kes.",
+    "wer": 0.42857142857142855
+   },
+   {
+    "idx": 3,
+    "hyp": "Son klibi en başa taşı.",
+    "wer": 0.0
+   },
+   {
+    "idx": 4,
+    "hyp": "Müzin sesini biraz kız.",
+    "wer": 0.5
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziği %30'e indir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Ortadaki video için.",
+    "wer": 0.6666666666666666
+   },
+   {
+    "idx": 7,
+    "hyp": "Paşa beyaz renkte yeni sezon yazısı ekle.",
+    "wer": 0.2857142857142857
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına alede.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aleve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üçüncü klibi ikinciyle yer değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna logoyu ekle.",
+    "wer": 0.0
+   },
+   {
+    "idx": 13,
+    "hyp": "Yüzü videonun başından başlar.",
+    "wer": 0.5
+   },
+   {
+    "idx": 14,
+    "hyp": "Hilibin sesini tamamen kapat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının dengini sarıya.",
+    "wer": 0.75
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniyeye düşür.",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "2. kilibin son 2 saniyesini at.",
+    "wer": 0.5
+   },
+   {
+    "idx": 18,
+    "hyp": "AK plan müziğini değiştir.",
+    "wer": 0.25
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışarı aktar.",
+    "wer": 0.2
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğin klibi geri getir.",
+    "wer": 0.16666666666666666
+   }
+  ],
+  "noisy_emel": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kilibi iki saniye kısaldı.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk pilibin başından bir buçuk saniye kes.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kili bir en başa taşı.",
+    "wer": 0.4
+   },
+   {
+    "idx": 4,
+    "hyp": "Müziğin sesini biraz kız.",
+    "wer": 0.25
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziği %30'a indir.",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Otadaki videoyu si.",
+    "wer": 0.6666666666666666
+   },
+   {
+    "idx": 7,
+    "hyp": "Başa beyaz renkli, yeni sezon yazısı ekle.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına halevi.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aleve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "3. klibi 2. ile yer değiştir.",
+    "wer": 0.6
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna loboya ekle.",
+    "wer": 0.25
+   },
+   {
+    "idx": 13,
+    "hyp": "Müzik videonun başından başlattı.",
+    "wer": 0.5
+   },
+   {
+    "idx": 14,
+    "hyp": "İlbin sesini tamamen kapat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının rengini sarıya.",
+    "wer": 0.5
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniyeye düşür.",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kilibinin son iki saniyesine at.",
+    "wer": 0.3333333333333333
+   },
+   {
+    "idx": 18,
+    "hyp": "Arka plan müziğini değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışa aktar.",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim klibi geri getir.",
+    "wer": 0.0
+   }
+  ]
+ },
+ "whisper-large-v3-turbo": {
+  "clean_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "İkinci klibi 2 saniye kısalt.",
+    "wer": 0.2
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk klibin başından 1,5 saniye kez.",
+    "wer": 0.42857142857142855
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kilibi en başa taşı.",
+    "wer": 0.2
+   },
+   {
+    "idx": 4,
+    "hyp": "Müziğin sesini biraz kız.",
+    "wer": 0.25
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziği yüzde otuz ayındır.",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Ortadaki videoyu sil.",
+    "wer": 0.0
+   },
+   {
+    "idx": 7,
+    "hyp": "Aşağı beyaz renkte, yeni sezon yazısı ekte.",
+    "wer": 0.42857142857142855
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına ALV.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aleve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üçüncü klibi ikinciyle yer değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna logoyu ekle.",
+    "wer": 0.0
+   },
+   {
+    "idx": 13,
+    "hyp": "Müziği videonun başından başlat.",
+    "wer": 0.0
+   },
+   {
+    "idx": 14,
+    "hyp": "Filip'in sesini tamamen kapat.",
+    "wer": 0.5
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının rengini sarı yap.",
+    "wer": 0.0
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniyeye düşür.",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci klibin son 2 saniyesini at.",
+    "wer": 0.16666666666666666
+   },
+   {
+    "idx": 18,
+    "hyp": "Arka plan müziğini değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışa aktar.",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim klibi geri getir.",
+    "wer": 0.0
+   }
+  ],
+  "clean_emel": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kilibi 2 saniye kısalt.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk klibin başından bir buçuk saniye kez.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kilibi en başa taşı",
+    "wer": 0.2
+   },
+   {
+    "idx": 4,
+    "hyp": "Müziğin sesini biraz kız.",
+    "wer": 0.25
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziği yüzde otuza indir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 6,
+    "hyp": "Ortadaki videoyu sil.",
+    "wer": 0.0
+   },
+   {
+    "idx": 7,
+    "hyp": "Başa beyaz renkle yeni sezon yazısı ekle.",
+    "wer": 0.0
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına ALV",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aleve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üçüncü klibi ikinci ile yer değiştir.",
+    "wer": 0.4
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna logoyu ekle.",
+    "wer": 0.0
+   },
+   {
+    "idx": 13,
+    "hyp": "Müziği videonun başından başlat.",
+    "wer": 0.0
+   },
+   {
+    "idx": 14,
+    "hyp": "Filip'in sesini tamamen kapat.",
+    "wer": 0.5
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının rengini sarı yap.",
+    "wer": 0.0
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniyeye düşür.",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kilibin son iki saniyesini at.",
+    "wer": 0.16666666666666666
+   },
+   {
+    "idx": 18,
+    "hyp": "Arka plan müziğini değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışa aktar.",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim kilibi geri getir.",
+    "wer": 0.16666666666666666
+   }
+  ],
+  "noisy_ahmet": [
+   {
+    "idx": 1,
+    "hyp": "İkinci klibi 2 saniye kısal.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk klibin başından 1,5 saniye kes.",
+    "wer": 0.2857142857142857
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kilibi en başa taşı.",
+    "wer": 0.2
+   },
+   {
+    "idx": 4,
+    "hyp": "Müziğin sesini biraz kız.",
+    "wer": 0.25
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziği yüzde otuz ayındır.",
+    "wer": 0.5
+   },
+   {
+    "idx": 6,
+    "hyp": "Ortadaki videoyu sil.",
+    "wer": 0.0
+   },
+   {
+    "idx": 7,
+    "hyp": "Aşa beyaz renkte, yeni sezon yazısı ekle.",
+    "wer": 0.2857142857142857
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına ALV.",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aleve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "3. klibi ikinci ile yer değiştir.",
+    "wer": 0.6
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna logoyu ekle.",
+    "wer": 0.0
+   },
+   {
+    "idx": 13,
+    "hyp": "Müziği videonun başından başlar.",
+    "wer": 0.25
+   },
+   {
+    "idx": 14,
+    "hyp": "Kilibin sesini tamamen kapat.",
+    "wer": 0.25
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının rengini sarıya.",
+    "wer": 0.5
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniyeye düşür.",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci klibin son 2 saniyesini at.",
+    "wer": 0.16666666666666666
+   },
+   {
+    "idx": 18,
+    "hyp": "Arka plan müziğini değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışa aktar.",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim klibi geri getir.",
+    "wer": 0.0
+   }
+  ],
+  "noisy_emel": [
+   {
+    "idx": 1,
+    "hyp": "İkinci kilibi 2 saniye kısalt.",
+    "wer": 0.4
+   },
+   {
+    "idx": 2,
+    "hyp": "İlk klibin başından bir buçuk saniye kez.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 3,
+    "hyp": "Son kilibi en başa taşı.",
+    "wer": 0.2
+   },
+   {
+    "idx": 4,
+    "hyp": "Müziğin sesini biraz kız.",
+    "wer": 0.25
+   },
+   {
+    "idx": 5,
+    "hyp": "Müziği yüzde otuza indir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 6,
+    "hyp": "Ortadaki videoyu sif.",
+    "wer": 0.3333333333333333
+   },
+   {
+    "idx": 7,
+    "hyp": "Başa beyaz renkli, yeni sezon, yazısı ekle.",
+    "wer": 0.14285714285714285
+   },
+   {
+    "idx": 8,
+    "hyp": "Yazıyı 3 saniye ekranda tut.",
+    "wer": 0.2
+   },
+   {
+    "idx": 9,
+    "hyp": "Başlığı ekranın altına ALV",
+    "wer": 0.25
+   },
+   {
+    "idx": 10,
+    "hyp": "Son yaptığımı geri aleve.",
+    "wer": 0.25
+   },
+   {
+    "idx": 11,
+    "hyp": "Üçüncü klibi ikinci ile yer değiştir.",
+    "wer": 0.4
+   },
+   {
+    "idx": 12,
+    "hyp": "Videonun sonuna logoyu ekle.",
+    "wer": 0.0
+   },
+   {
+    "idx": 13,
+    "hyp": "Müziği videonun başından başlat.",
+    "wer": 0.0
+   },
+   {
+    "idx": 14,
+    "hyp": "Pilip'in sesini tamamen kapat.",
+    "wer": 0.5
+   },
+   {
+    "idx": 15,
+    "hyp": "Yazının rengini sarı yap.",
+    "wer": 0.0
+   },
+   {
+    "idx": 16,
+    "hyp": "Toplam süreyi 20 saniyeye düşür.",
+    "wer": 0.2
+   },
+   {
+    "idx": 17,
+    "hyp": "İkinci kilibin son iki saniyesine at.",
+    "wer": 0.3333333333333333
+   },
+   {
+    "idx": 18,
+    "hyp": "Arka plan müziğini değiştir.",
+    "wer": 0.0
+   },
+   {
+    "idx": 19,
+    "hyp": "Videoyu dikey olarak dışa aktar.",
+    "wer": 0.0
+   },
+   {
+    "idx": 20,
+    "hyp": "Az önce sildiğim klibi geri getir.",
+    "wer": 0.0
+   }
+  ]
+ }
+}
