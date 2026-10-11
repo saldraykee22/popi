@@ -19,6 +19,16 @@ class ProjectSummaryTest {
         }
     }
 
+    @Test fun includesUserLabelButNeverPath() {
+        val project = sampleProject().let { p ->
+            p.copy(assets = p.assets.map { if (it.id == "v2") it.copy(label = "hamur yoğurma") else it })
+        }
+        val summary = ProjectSummary.summarize(project)
+        assertContains(summary, "ad: \"hamur yoğurma\"")
+        assertFalse(summary.contains("gizli-klasor"), "Özet dosya yolunu sızdırdı")
+        assertFalse(summary.contains("hamur.mp4"), "Özet dosya adını sızdırdı")
+    }
+
     @Test fun includesClipIdsAndOrder() {
         val summary = ProjectSummary.summarize(sampleProject())
         assertContains(summary, "c1: varlık v1")

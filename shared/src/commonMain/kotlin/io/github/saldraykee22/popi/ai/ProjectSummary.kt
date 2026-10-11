@@ -15,7 +15,7 @@ object ProjectSummary {
             appendLine("Proje: ${project.id}, tuval ${project.canvas.w}x${project.canvas.h} @${project.canvas.fps}fps")
             appendLine("Varlıklar:")
             project.assets.forEach { asset ->
-                appendLine("- ${asset.id}: ${asset.kind}, ${asset.durationMs} ms")
+                appendLine("- ${asset.id}: ${asset.kind}, ${asset.durationMs} ms" + (asset.label?.let { ", ad: \"$it\"" } ?: ""))
             }
             project.tracks.forEach { track ->
                 when (track.kind) {

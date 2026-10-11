@@ -3,7 +3,8 @@ package io.github.saldraykee22.popi.domain
 import kotlinx.serialization.Serializable
 
 @Serializable data class Canvas(val w: Int = 1080, val h: Int = 1920, val fps: Int = 30)
-@Serializable data class Asset(val id: String, val kind: String, val uri: String, val durationMs: Long)
+/** [label]: kullanıcının gördüğü ve değiştirebildiği ad. Modele gider ve onay ekranında görünür; [uri] (dosya yolu) asla gitmez. */
+@Serializable data class Asset(val id: String, val kind: String, val uri: String, val durationMs: Long, val label: String? = null)
 @Serializable data class Clip(
     val id: String,
     val assetId: String,
