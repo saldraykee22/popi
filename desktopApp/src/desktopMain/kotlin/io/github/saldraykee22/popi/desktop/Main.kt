@@ -46,6 +46,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import io.github.saldraykee22.popi.desktop.ai.AiPanelController
+import io.github.saldraykee22.popi.desktop.ai.AiSettingsStore
+import io.github.saldraykee22.popi.desktop.ai.DefaultLlmTransportFactory
+import io.github.saldraykee22.popi.desktop.ai.LlmTransportFactory
+import io.github.saldraykee22.popi.desktop.preview.PreviewEngine
+import io.github.saldraykee22.popi.desktop.secrets.DpapiSecretStore
+import io.github.saldraykee22.popi.desktop.ui.AiPanel
 import io.github.saldraykee22.popi.desktop.ui.MediaEntry
 import io.github.saldraykee22.popi.desktop.ui.MediaKind
 import io.github.saldraykee22.popi.desktop.ui.MediaPanel
@@ -67,9 +74,7 @@ import io.github.saldraykee22.popi.domain.Clip
 import io.github.saldraykee22.popi.domain.CommandEngine
 import io.github.saldraykee22.popi.domain.Project
 import io.github.saldraykee22.popi.domain.Track
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.delay
+import io.github.saldraykee22.popi.secrets.SecretStore
 import java.awt.Component
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
@@ -80,8 +85,12 @@ import java.io.File
 import java.net.URI
 import java.nio.file.Path
 import java.util.UUID
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 fun main() = application {
     val dropInbox = remember { FileDropInbox() }
@@ -130,17 +139,30 @@ internal fun DesktopScreen(
     thumbnailOverride: MediaThumbnailSource? = null,
     dropInbox: FileDropInbox? = null,
     previewContent: (@Composable (Modifier) -> Unit)? = null,
+    secretStoreOverride: SecretStore? = null,
+    transportFactoryOverride: LlmTransportFactory? = null,
+    settingsFileOverride: Path? = null,
 ) {
     val platform = remember(platformOverride) { platformOverride ?: WindowsDesktopPlatform() }
     val store = remember(storeOverride) { storeOverride ?: ProjectStore() }
     val thumbnails = remember(thumbnailOverride) {
         thumbnailOverride ?: DesktopMediaThumbnails(Thumbnails(defaultThumbnailCacheDir()))
     }
+    val secretStore = remember(secretStoreOverride) { secretStoreOverride ?: DpapiSecretStore() }
+    val settingsStore = remember(settingsFileOverride) {
+        AiSettingsStore(settingsFileOverride ?: AiSettingsStore.defaultFile())
+    }
+    val aiController = remember(secretStore, settingsStore, transportFactoryOverride) {
+        AiPanelController(
+            secretStore = secretStore,
+            settingsStore = settingsStore,
+            transportFactory = transportFactoryOverride ?: DefaultLlmTransportFactory,
+        )
+    }
     val restored = remember { store.loadLast() }
     var engine by remember { mutableStateOf(CommandEngine(restored?.second ?: Project())) }
     var project by remember { mutableStateOf(engine.project) }
     var projectName by remember { mutableStateOf(restored?.first ?: "Adsız Proje") }
-    var command by remember { mutableStateOf("") }
     var status by remember { mutableStateOf(StatusMessage("Hazır")) }
     var selectedClipId by remember { mutableStateOf<String?>(null) }
     var playheadMs by remember { mutableLongStateOf(0L) }
@@ -148,8 +170,8 @@ internal fun DesktopScreen(
     var exportRunning by remember { mutableStateOf(false) }
     var exportPercent by remember { mutableIntStateOf(0) }
     val renderer = remember { DesktopRenderer() }
+    val previewEngine = remember { PreviewEngine() }
     var previewImage by remember { mutableStateOf<ImageBitmap?>(null) }
-    val previewRequest = remember { AtomicInteger() }
     val videoTrack: Track? = project.tracks.firstOrNull { it.kind == "video" }
     val audioTrack: Track? = project.tracks.firstOrNull { it.kind == "audio" }
     val textTrack: Track? = project.tracks.firstOrNull { it.kind == "text" }
@@ -169,12 +191,40 @@ internal fun DesktopScreen(
         runCatching { engine.executeJson(json); refresh(); save(); status = StatusMessage("Düzenleme uygulandı") }
             .onFailure { status = StatusMessage(it.message ?: "Komut uygulanamadı", true) }
     }
+    fun undoEdit() {
+        runCatching { engine.undo(); refresh(); save(); status = StatusMessage("Geri alındı") }
+            .onFailure { status = StatusMessage(it.message ?: "Geri alınacak işlem yok", true) }
+    }
+    fun redoEdit() {
+        runCatching { engine.redo(); refresh(); save(); status = StatusMessage("Yinelendi") }
+            .onFailure { status = StatusMessage(it.message ?: "Yinelenecek işlem yok", true) }
+    }
+    fun togglePlay() {
+        if (playing) {
+            previewEngine.pause()
+            playing = false
+        } else if (duration > 0) {
+            playing = true
+            previewEngine.play(engine.project, playheadMs)
+            if (!previewEngine.isPlaying) playing = false
+        }
+    }
+    fun renameAsset(asset: Asset, label: String) {
+        val clean = label.trim().ifBlank { null }
+        val updated = engine.project.copy(
+            assets = engine.project.assets.map { if (it.id == asset.id) it.copy(label = clean) else it },
+        )
+        engine = CommandEngine(updated)
+        refresh()
+        save()
+    }
     fun importFiles(files: List<File>) {
         val plan = planMediaImport(files) { it.name }
         val result = runCatching {
             plan.accepted.forEach { (file, kind) ->
                 val id = "asset-${UUID.randomUUID()}"
-                engine.registerAssets(listOf(Asset(id, kind.wire, file.toURI().toString(), probeDurationMs(file))))
+                val label = file.name.substringBeforeLast('.', file.name)
+                engine.registerAssets(listOf(Asset(id, kind.wire, file.toURI().toString(), probeDurationMs(file), label)))
                 when (kind) {
                     MediaKind.VIDEO -> engine.executeJson("""{"op":"import_clip","assetId":"$id","trackId":"v1"}""")
                     MediaKind.AUDIO -> {
@@ -195,40 +245,28 @@ internal fun DesktopScreen(
         }
     }
 
-    LaunchedEffect(project, projectName) {
+    // Önizleme motoru geri çağrıları; pencere kapanınca motor kapanır ve FFmpeg süreçleri temizlenir.
+    DisposableEffect(previewEngine) {
+        previewEngine.onFrame = { image, _ -> previewImage = image.toComposeImageBitmap() }
+        previewEngine.onPosition = { ms -> playheadMs = ms }
+        previewEngine.onEnd = { playing = false }
+        onDispose { previewEngine.close() }
+    }
+
+    LaunchedEffect(project) {
         delay(500)
         runCatching { store.save(projectName, project) }
     }
     LaunchedEffect(dropInbox) {
         dropInbox?.let { inbox -> for (batch in inbox.batches) importFiles(batch) }
     }
-    LaunchedEffect(project, playing, playheadMs) {
-        if (!playing && duration > 0) {
-            val request = previewRequest.incrementAndGet()
-            val frameTime = playheadMs.coerceAtMost((duration - 34).coerceAtLeast(0))
-            thread(name = "popi-preview-frame") {
-                val began = System.nanoTime()
-                runCatching { renderer.previewFrame(project, frameTime) }.onSuccess { frame ->
-                    val elapsed = (System.nanoTime() - began) / 1_000_000
-                    if (previewRequest.get() == request) {
-                        previewImage = frame.toComposeImageBitmap()
-                        status = StatusMessage("Önizleme ${elapsed} ms")
-                    }
-                    println("Popi preview render latency: ${elapsed} ms at ${frameTime} ms")
-                }.onFailure { if (previewRequest.get() == request) status = StatusMessage("Önizleme hatası: ${it.message}", true) }
-            }
-        }
-    }
-    LaunchedEffect(playing, project, playheadMs) {
-        if (playing) {
-            val began = System.nanoTime()
-            while (playing && playheadMs < duration) {
-                delay(33)
-                val elapsed = (System.nanoTime() - began) / 1_000_000
-                playheadMs = (playheadMs + elapsed.coerceAtMost(100)).coerceAtMost(duration)
-                if (playheadMs >= duration) playing = false
-            }
-        }
+    // Düzenleme sonrası o anki konumun karesi yenilenir. Proje anahtarı değişince eski istek iptal olur.
+    LaunchedEffect(project, projectName) {
+        if (duration <= 0) return@LaunchedEffect
+        delay(PREVIEW_DEBOUNCE_MS)
+        val at = playheadMs.coerceIn(0L, (duration - 1).coerceAtLeast(0L))
+        val frame = withContext(Dispatchers.IO) { runCatching { previewEngine.frameAt(project, at) }.getOrNull() }
+        if (frame != null) previewImage = frame.toComposeImageBitmap()
     }
 
     // Zaman çizelgesi blokları: video klipleri art arda, ses ve metin kendi başlangıçlarında.
@@ -236,12 +274,12 @@ internal fun DesktopScreen(
         var cursor = 0L
         videoTrack?.clips.orEmpty().map { clip ->
             val length = clip.outMs - clip.inMs
-            TimelineBlock(clip.id, assetFor(clip.assetId)?.let(::displayName) ?: "Klip", cursor, length, assetFor(clip.assetId))
+            TimelineBlock(clip.id, assetFor(clip.assetId)?.let(::assetLabel) ?: "Klip", cursor, length, assetFor(clip.assetId))
                 .also { cursor += length }
         }
     }
     val audioBlocks: List<TimelineBlock> = audioTrack?.clips.orEmpty().map { clip ->
-        TimelineBlock(clip.id, assetFor(clip.assetId)?.let(::displayName) ?: "Ses", clip.startMs ?: 0L, clip.outMs - clip.inMs, assetFor(clip.assetId))
+        TimelineBlock(clip.id, assetFor(clip.assetId)?.let(::assetLabel) ?: "Ses", clip.startMs ?: 0L, clip.outMs - clip.inMs, assetFor(clip.assetId))
     }
     val textBlocks: List<TimelineBlock> = textTrack?.items.orEmpty().map { item ->
         TimelineBlock(item.id, item.text, item.startMs, item.durationMs)
@@ -251,7 +289,7 @@ internal fun DesktopScreen(
         ?.coerceAtLeast(duration)
         ?.coerceAtLeast(1L)
         ?: duration.coerceAtLeast(1L)
-    val mediaEntries = project.assets.map { MediaEntry(it, displayName(it)) }
+    val mediaEntries = project.assets.map { MediaEntry(it, assetLabel(it)) }
     val hint = if (videoTrack?.clips.isNullOrEmpty()) "Medya içe aktar" else "Önizleme hazırlanıyor"
     val defaultPreview: @Composable (Modifier) -> Unit = { modifier -> PreviewFrame(modifier, previewImage, hint) }
 
@@ -259,10 +297,10 @@ internal fun DesktopScreen(
         if (event.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
         val ctrl = event.isCtrlPressed || event.isMetaPressed
         when {
-            ctrl && event.key == Key.Z -> { runCatching { engine.undo(); refresh(); save() }; true }
-            ctrl && event.key == Key.Y -> { runCatching { engine.redo(); refresh(); save() }; true }
+            ctrl && event.key == Key.Z -> { undoEdit(); true }
+            ctrl && event.key == Key.Y -> { redoEdit(); true }
             ctrl && event.key == Key.S -> { save(); true }
-            event.key == Key.Spacebar -> { playing = !playing; true }
+            event.key == Key.Spacebar -> { togglePlay(); true }
             event.key == Key.Delete && selectedClipId != null -> { execute("""{"op":"delete_clip","clipId":"$selectedClipId"}"""); selectedClipId = null; true }
             else -> false
         }
@@ -282,20 +320,8 @@ internal fun DesktopScreen(
                 label = { Text("Proje adı", color = PopiColors.textMuted) },
             )
             Spacer(Modifier.weight(1f))
-            TextButton(
-                onClick = {
-                    runCatching { engine.undo(); refresh(); save(); status = StatusMessage("Geri alındı") }
-                        .onFailure { status = StatusMessage(it.message ?: "Geri alınacak işlem yok", true) }
-                },
-                enabled = engine.canUndo(),
-            ) { Text("↶ Geri al") }
-            TextButton(
-                onClick = {
-                    runCatching { engine.redo(); refresh(); save(); status = StatusMessage("Yinelendi") }
-                        .onFailure { status = StatusMessage(it.message ?: "Yinelenecek işlem yok", true) }
-                },
-                enabled = engine.canRedo(),
-            ) { Text("↷ Yinele") }
+            TextButton(onClick = { undoEdit() }, enabled = engine.canUndo()) { Text("↶ Geri al") }
+            TextButton(onClick = { redoEdit() }, enabled = engine.canRedo()) { Text("↷ Yinele") }
             Button(
                 onClick = {
                     val output = platform.chooseExportPath(projectName) ?: return@Button
@@ -319,6 +345,7 @@ internal fun DesktopScreen(
                 entries = mediaEntries,
                 thumbnails = thumbnails,
                 onImport = { importFiles(platform.chooseMediaFiles()) },
+                onRename = ::renameAsset,
                 modifier = Modifier.width(250.dp).fillMaxHeight(),
             )
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -326,14 +353,14 @@ internal fun DesktopScreen(
                     preview = previewContent ?: defaultPreview,
                     playing = playing,
                     playheadLabel = "${formatTimecode(playheadMs)} / ${formatTimecode(duration)}",
-                    onTogglePlay = { playing = !playing },
+                    onTogglePlay = { togglePlay() },
                     modifier = Modifier.weight(1f).fillMaxWidth(),
                 )
                 PopiPanel(Modifier.fillMaxWidth().height(228.dp), padding = 12.dp, spacing = 6.dp) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("ZAMAN ÇİZELGESİ", color = PopiColors.textMuted, fontSize = 12.sp, letterSpacing = 1.sp)
                         Spacer(Modifier.weight(1f))
-                        TextButton(onClick = { playheadMs = 0; playing = false }) { Text("Başa", color = PopiColors.accent) }
+                        TextButton(onClick = { previewEngine.seek(0L); playheadMs = 0L; playing = false }) { Text("Başa", color = PopiColors.accent) }
                     }
                     TimelineLane(
                         name = "Video",
@@ -342,7 +369,7 @@ internal fun DesktopScreen(
                         selectedId = selectedClipId,
                         thumbnails = thumbnails,
                         onSelect = { selectedClipId = it },
-                        onSeek = { playheadMs = it },
+                        onSeek = { previewEngine.seek(it); playheadMs = it },
                     )
                     TimelineLane(
                         name = "Metin",
@@ -351,7 +378,7 @@ internal fun DesktopScreen(
                         selectedId = null,
                         thumbnails = thumbnails,
                         onSelect = {},
-                        onSeek = { playheadMs = it },
+                        onSeek = { previewEngine.seek(it); playheadMs = it },
                     )
                     TimelineLane(
                         name = "Müzik",
@@ -360,78 +387,33 @@ internal fun DesktopScreen(
                         selectedId = null,
                         thumbnails = thumbnails,
                         onSelect = {},
-                        onSeek = { playheadMs = it },
+                        onSeek = { previewEngine.seek(it); playheadMs = it },
                     )
                 }
             }
-            PopiPanel(Modifier.width(300.dp).fillMaxHeight(), padding = 14.dp, spacing = 10.dp) {
-                Text("GELİŞMİŞ: KOMUT", color = PopiColors.textMuted, fontSize = 12.sp, letterSpacing = 1.sp)
-                Text("M1'de yapay zekâ yok. JSON komutunu düzenleyip gönder.", color = PopiColors.textMuted, fontSize = 12.sp)
-                OutlinedTextField(
-                    value = command,
-                    onValueChange = { command = it },
-                    modifier = Modifier.fillMaxWidth().weight(1f).testTag("command-input"),
-                    label = { Text("JSON komutu", color = PopiColors.textMuted) },
-                    placeholder = { Text("{\"op\":...}", color = PopiColors.textMuted) },
-                    textStyle = TextStyle(color = PopiColors.text, fontFamily = PopiFonts.mono, fontSize = 12.sp),
-                    minLines = 8,
+            Column(Modifier.width(320.dp).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                AiPanel(
+                    controller = aiController,
+                    project = project,
+                    onApply = { execute(it) },
+                    onUndo = { undoEdit() },
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
                 )
-                Button(onClick = { execute(command) }, Modifier.fillMaxWidth(), enabled = command.isNotBlank()) { Text("Komutu gönder") }
                 selectedClip?.let { clip ->
-                    val clips = videoTrack?.clips.orEmpty()
-                    Text("KLİP AYRINTILARI", color = PopiColors.textMuted, fontSize = 12.sp)
-                    var inText by remember(clip.id, clip.inMs) { mutableStateOf(clip.inMs.toString()) }
-                    var outText by remember(clip.id, clip.outMs) { mutableStateOf(clip.outMs.toString()) }
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        OutlinedTextField(
-                            value = inText,
-                            onValueChange = { inText = it },
-                            modifier = Modifier.weight(1f).testTag("in-point"),
-                            label = { Text("Giriş ms") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            singleLine = true,
-                        )
-                        OutlinedTextField(
-                            value = outText,
-                            onValueChange = { outText = it },
-                            modifier = Modifier.weight(1f),
-                            label = { Text("Çıkış ms") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            singleLine = true,
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            execute("""{"op":"trim_clip","clipId":"${clip.id}","inMs":${inText.toLongOrNull() ?: clip.inMs},"outMs":${outText.toLongOrNull() ?: clip.outMs}}""")
-                        },
-                        Modifier.fillMaxWidth(),
-                    ) { Text("Kırpmayı uygula") }
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                        OutlinedButton(
-                            onClick = {
-                                val at = clips.indexOfFirst { it.id == clip.id }
-                                if (at > 0) execute("""{"op":"move_clip","clipId":"${clip.id}","toIndex":${at - 1}}""")
-                            },
-                            Modifier.weight(1f),
-                        ) { Text("Sola") }
-                        OutlinedButton(
-                            onClick = {
-                                val at = clips.indexOfFirst { it.id == clip.id }
-                                if (at < clips.lastIndex) execute("""{"op":"move_clip","clipId":"${clip.id}","toIndex":${at + 1}}""")
-                            },
-                            Modifier.weight(1f),
-                        ) { Text("Sağa") }
-                        OutlinedButton(
-                            onClick = { execute("""{"op":"delete_clip","clipId":"${clip.id}"}"""); selectedClipId = null },
-                            Modifier.weight(1f),
-                        ) { Text("Sil") }
-                    }
+                    ClipDetails(
+                        clip = clip,
+                        clips = videoTrack?.clips.orEmpty(),
+                        onExecute = ::execute,
+                        onCleared = { selectedClipId = null },
+                    )
                 }
                 StatusLine(status)
             }
         }
     }
 }
+
+private const val PREVIEW_DEBOUNCE_MS = 150L
 
 /** Dosya süresi (ms). FFprobe yoksa ya da okunamazsa 0 döner. */
 private fun probeDurationMs(file: File): Long = runCatching {
@@ -440,6 +422,65 @@ private fun probeDurationMs(file: File): Long = runCatching {
     if (process.waitFor() == 0) (seconds * 1000).toLong() else 0L
 }.getOrDefault(0L)
 
-/** Varlık için ekranda görünecek dosya adı. */
-private fun displayName(asset: Asset): String =
-    runCatching { Path.of(URI(asset.uri)).fileName.toString() }.getOrDefault(asset.uri)
+/** Varlık için ekranda görünecek ad: kullanıcının verdiği etiket, yoksa dosya adı. */
+private fun assetLabel(asset: Asset): String =
+    asset.label ?: runCatching { Path.of(URI(asset.uri)).fileName.toString() }.getOrDefault(asset.uri)
+
+/** Seçili klip için elle düzenleme: kırp, taşı, sil. Hepsi komut motorundan geçer. */
+@Composable
+private fun ClipDetails(
+    clip: Clip,
+    clips: List<Clip>,
+    onExecute: (String) -> Unit,
+    onCleared: () -> Unit,
+) {
+    var inText by remember(clip.id, clip.inMs) { mutableStateOf(clip.inMs.toString()) }
+    var outText by remember(clip.id, clip.outMs) { mutableStateOf(clip.outMs.toString()) }
+    PopiPanel(padding = 12.dp, spacing = 8.dp) {
+        Text("KLİP AYRINTILARI", color = PopiColors.textMuted, fontSize = 12.sp, letterSpacing = 1.sp)
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            OutlinedTextField(
+                value = inText,
+                onValueChange = { inText = it },
+                modifier = Modifier.weight(1f).testTag("in-point"),
+                label = { Text("Giriş ms") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+            )
+            OutlinedTextField(
+                value = outText,
+                onValueChange = { outText = it },
+                modifier = Modifier.weight(1f),
+                label = { Text("Çıkış ms") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+            )
+        }
+        Button(
+            onClick = {
+                onExecute("""{"op":"trim_clip","clipId":"${clip.id}","inMs":${inText.toLongOrNull() ?: clip.inMs},"outMs":${outText.toLongOrNull() ?: clip.outMs}}""")
+            },
+            Modifier.fillMaxWidth(),
+        ) { Text("Kırpmayı uygula") }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+            OutlinedButton(
+                onClick = {
+                    val at = clips.indexOfFirst { it.id == clip.id }
+                    if (at > 0) onExecute("""{"op":"move_clip","clipId":"${clip.id}","toIndex":${at - 1}}""")
+                },
+                Modifier.weight(1f),
+            ) { Text("Sola") }
+            OutlinedButton(
+                onClick = {
+                    val at = clips.indexOfFirst { it.id == clip.id }
+                    if (at < clips.lastIndex) onExecute("""{"op":"move_clip","clipId":"${clip.id}","toIndex":${at + 1}}""")
+                },
+                Modifier.weight(1f),
+            ) { Text("Sağa") }
+            OutlinedButton(
+                onClick = { onExecute("""{"op":"delete_clip","clipId":"${clip.id}"}"""); onCleared() },
+                Modifier.weight(1f),
+            ) { Text("Sil") }
+        }
+    }
+}

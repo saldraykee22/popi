@@ -54,6 +54,8 @@ class DesktopUiTest {
     private fun cachedThumbnails(): DesktopMediaThumbnails =
         DesktopMediaThumbnails(Thumbnails(Files.createTempDirectory("popi-ui-cache")))
 
+    private fun settingsFile(): Path = Files.createTempDirectory("popi-ui-ayar").resolve("ayarlar.json")
+
     @OptIn(ExperimentalTestApi::class)
     @Test fun importSelectTrimUndoRestoresClipAndPreviewRenders() = runComposeUiTest {
         val directory = Files.createTempDirectory("popi-ui-test")
@@ -62,12 +64,18 @@ class DesktopUiTest {
         val root = Files.createTempDirectory("popi-ui-store")
         setContent {
             PopiTheme {
-                DesktopScreen(ProjectStore(root), platformWith(listOf(video.toFile())), cachedThumbnails())
+                DesktopScreen(
+                    ProjectStore(root),
+                    platformWith(listOf(video.toFile())),
+                    cachedThumbnails(),
+                    secretStoreOverride = InMemorySecretStore(),
+                    settingsFileOverride = settingsFile(),
+                )
             }
         }
         onNodeWithText("+ İçe aktar").fetchSemanticsNode(); onNodeWithText("+ İçe aktar").performClick()
         waitForIdle()
-        onAllNodesWithText("ui-clip.mp4")[1].performClick()
+        onAllNodesWithText("ui-clip")[1].performClick()
         onNodeWithTag("in-point").performTextReplacement("500")
         onNodeWithText("Kırpmayı uygula").performClick()
         waitForIdle()
@@ -90,12 +98,19 @@ class DesktopUiTest {
         val root = Files.createTempDirectory("popi-drop-store")
         setContent {
             PopiTheme {
-                DesktopScreen(ProjectStore(root), platformWith(emptyList()), cachedThumbnails(), dropInbox = inbox)
+                DesktopScreen(
+                    ProjectStore(root),
+                    platformWith(emptyList()),
+                    cachedThumbnails(),
+                    dropInbox = inbox,
+                    secretStoreOverride = InMemorySecretStore(),
+                    settingsFileOverride = settingsFile(),
+                )
             }
         }
         waitForIdle()
         inbox.offer(listOf(video.toFile(), note.toFile()))
-        waitUntil(timeoutMillis = 30_000) { onAllNodesWithText("drop-clip.mp4").fetchSemanticsNodes().isNotEmpty() }
+        waitUntil(timeoutMillis = 30_000) { onAllNodesWithText("drop-clip").fetchSemanticsNodes().isNotEmpty() }
         waitForIdle()
         onNodeWithText("1 medya içe aktarıldı. Desteklenmeyen dosya: notlar.txt").fetchSemanticsNode()
     }
@@ -112,10 +127,18 @@ class DesktopUiTest {
         val root = Files.createTempDirectory("popi-screen-store")
         setContent {
             PopiTheme {
-                DesktopScreen(ProjectStore(root), platformWith(listOf(first.toFile(), second.toFile(), music.toFile())), cachedThumbnails())
+                DesktopScreen(
+                    ProjectStore(root),
+                    platformWith(listOf(first.toFile(), second.toFile(), music.toFile())),
+                    cachedThumbnails(),
+                    secretStoreOverride = InMemorySecretStore(),
+                    settingsFileOverride = settingsFile(),
+                )
             }
         }
         onNodeWithText("+ İçe aktar").performClick()
+        waitForIdle()
+        onNodeWithTag("advanced-toggle").performClick()
         waitForIdle()
         onNodeWithTag("command-input").performTextReplacement(
             """{"op":"add_text","trackId":"t1","startMs":0,"durationMs":3000,"text":"Başlık","id":"x1"}""",
