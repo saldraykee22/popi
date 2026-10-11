@@ -13,4 +13,13 @@ Popi'nin ürettiği hiçbir şey "yapay zekâ yapmış" gibi görünmemeli. Bu i
 ## Arayüz
 - Mor/mavi gradyan, cam efekti, parıltı ikonu ve "sihirli" düğme yoktur.
 - Yapay zekâ ayrı bir "AI modu" değildir; düzenleyicinin doğal parçasıdır. Konuşma alanı ve zaman çizelgesi aynı ekrandadır.
-- Arayüz geri çekilir, içerik öne çıkar: koyu sıcak zemin, tek vurgu rengi, zaman kodları için eşit aralıklı yazı tipi.
+- Arayüz geri çekilir, içerik öne çıkar.
+- **Renk:** varsayılan zemin AMOLED siyahı (`#000000`); OLED ekranda pil dostu ve göz yormaz. Yazı saf beyaz değil, kırık beyaz (`#E7E5E0`); saf beyaz siyah üstünde parlama yapar. Tek vurgu rengi düşük doygunlukta kum tonu (`#D2B47A`). Kırmızı ve doygun renkler yalnızca uyarı gibi gerçekten dikkat isteyen yerlerde kullanılır. Açık tema sonra eklenecek.
+- **Efektler ölçülü:** dokunmada kısa yumuşak geçiş (≤180 ms), klip şeridinde gerçek kareler, ses izinde dalga formu. Parıltı, sürekli animasyon ve gradyan dolgu yok.
+- Zaman kodları için eşit aralıklı yazı tipi.
+
+## Herkes için tek uygulama
+- **Varsayılan görünüm sade.** Konuşma alanı, önizleme ve klip şeridi; CapCut'ı hiç açmamış biri de anlamalı.
+- **Ayrıntılı görünüm bir dokunuş uzakta.** Çok izli zaman çizelgesi, sayısal giriş/çıkış ve klavye kısayolları (masaüstü); Premiere kullanan da aradığını bulmalı.
+- **İki görünüm aynı komutları kullanır.** Biri diğerinin "pro modu" değildir, aynı projenin iki penceresidir.
+- **Model kullanıcının diliyle konuşur.** "Biraz kıs" diyene de "-6 dB" diyene de doğru işlemi yapar; cevaplarını kullanıcının kullandığı terimlerle verir.
